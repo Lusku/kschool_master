@@ -19,6 +19,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, roc_curve, auc, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, adjusted_rand_score, r2_score, silhouette_score, davies_bouldin_score, calinski_harabasz_score
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
+import random
 
 
 # Functions
