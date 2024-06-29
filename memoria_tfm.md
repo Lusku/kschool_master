@@ -285,92 +285,103 @@ Se llevaron a cabo varios análisis descriptivos y exploratorios para entender m
 
      Los boxplots comparan las distribuciones de los marcadores entre los tipos de tumor (cáncer vs. no cáncer). Se observa una diferencia significativa en los niveles de marcadores como CA19-9 y CA-125 entre los dos grupos, lo que refuerza la relevancia de estos marcadores en la identificación del cáncer.
 
-   * Análisis de correlación entre marcadores utilizando matrices de correlación de Pearson, lo cual mostró fuertes correlaciones positivas entre ciertos marcadores (por ejemplo, TIMP-1 y OPN).
+   * Análisis de correlación entre marcadores utilizando distintos métodos:
 
-     |                          | Tumor type | CA19-9 (U/ml) | CA-125 (U/ml) | HGF (pg/ml) | OPN (pg/ml) | Omega score | Prolactin (pg/ml) | CEA (pg/ml) | Myeloperoxidase  (ng/ml) | TIMP-1 (pg/ml) |
-     | ------------------------ | ---------- | ------------- | ------------- | ----------- | ----------- | ----------- | ----------------- | ----------- | ------------------------ | -------------- |
-     | Tumor type               | 1          | 0,078404      | 0,095708      | 0,242512    | 0,458352    | 0,146759    | 0,324378          | 0,126718    | 0,221877                 | 0,300539       |
-     | CA19-9 (U/ml)            | 0,078404   | 1             | 0,320058      | 0,073118    | 0,128661    | 0,163876    | 0,018555          | 0,077374    | 0,028111                 | 0,108501       |
-     | CA-125 (U/ml)            | 0,095708   | 0,320058      | 1             | 0,04884     | 0,139191    | 0,266448    | 0,0671            | 0,161872    | 0,030923                 | 0,189664       |
-     | HGF (pg/ml)              | 0,242512   | 0,073118      | 0,04884       | 1           | 0,403077    | 0,073092    | 0,024611          | 0,18305     | 0,41062                  | 0,316351       |
-     | OPN (pg/ml)              | 0,458352   | 0,128661      | 0,139191      | 0,403077    | 1           | 0,196347    | 0,080668          | 0,164872    | 0,317979                 | 0,490956       |
-     | Omega score              | 0,146759   | 0,163876      | 0,266448      | 0,073092    | 0,196347    | 1           | 0,085961          | 0,208276    | 0,059295                 | 0,111627       |
-     | Prolactin  (pg/ml)       | 0,324378   | 0,018555      | 0,0671        | 0,024611    | 0,080668    | 0,085961    | 1                 | 0,021344    | 0,035737                 | -0,00351       |
-     | CEA (pg/ml)              | 0,126718   | 0,077374      | 0,161872      | 0,18305     | 0,164872    | 0,208276    | 0,021344          | 1           | 0,109459                 | 0,135252       |
-     | Myeloperoxidase  (ng/ml) | 0,221877   | 0,028111      | 0,030923      | 0,41062     | 0,317979    | 0,059295    | 0,035737          | 0,109459    | 1                        | 0,232968       |
-     | TIMP-1 (pg/ml)           | 0,300539   | 0,108501      | 0,189664      | 0,316351    | 0,490956    | 0,111627    | -0,00351          | 0,135252    | 0,232968                 | 1              |
+     ### Comparación de resultados de information gain
 
-     - A continuación se presentan algunas observaciones importantes basadas en la matriz de correlación:
+     La comparación de los resultados de información gain se realizó utilizando tres métodos diferentes para medir la correlación entre variables predictoras y una variable objetivo binaria. A continuación se detallan los métodos y se analizan los resultados obtenidos.
 
-       ###### Correlación con el Tipo de Tumor
+     #### Método 1: Variables continuas, variable objetivo binaria --> Correlación de Pearson
+     En este método, se empleó la correlación de Pearson para evaluar la relación lineal entre las variables continuas y la variable objetivo binaria. La correlación de Pearson proporciona un coeficiente que oscila entre -1 y 1, donde valores cercanos a 1 o -1 indican una fuerte correlación positiva o negativa, respectivamente, y valores cercanos a 0 indican una débil o nula correlación.
 
-       - **CA19-9 (U/ml)**:
-         - **Correlación**: 0.078404
-         - **Interpretación**: La correlación positiva es baja, lo que sugiere que CA19-9 tiene una influencia menor en la distinción entre muestras con y sin cáncer en este conjunto de datos.
+     #### Método 2: Variables discretas (KBinsDiscretizer()), variable objetivo binaria --> Correlación
+     Aquí, se utilizaron el KBinsDiscretizer para transformar las variables continuas en variables discretas mediante la técnica de binning. Esta transformación permite convertir las variables continuas en intervalos discretos, facilitando el cálculo de la correlación con la variable objetivo binaria. Se evaluó la relación entre estas variables discretizadas y la variable objetivo utilizando una métrica de correlación adecuada.
 
-       - **CA-125 (U/ml)**:
-         - **Correlación**: 0.095708
-         - **Interpretación**: Similar a CA19-9, CA-125 muestra una correlación positiva baja con el tipo de tumor, indicando una influencia limitada en la diferenciación.
+     #### Método 3: Variables discretizado (Árbol de decisión (max_depth = 15)), variable objetivo binaria --> Correlación
+     En este enfoque, las variables continuas fueron discretizadas utilizando un árbol de decisión con una profundidad máxima de 15. El árbol de decisión permite capturar relaciones no lineales y crear divisiones basadas en los valores de las características. Después de la discretización, se midió la correlación entre las variables discretizadas y la variable objetivo binaria
 
-       - **HGF (pg/ml)**:
-         - **Correlación**: 0.242512
-         - **Interpretación**: HGF presenta una correlación positiva moderada, lo que indica que este marcador puede ser útil para distinguir entre muestras con y sin cáncer.
+     ### Resultados
 
-       - **OPN (pg/ml)**:
-         - **Correlación**: 0.458352
-         - **Interpretación**: OPN muestra una correlación positiva moderada-alta con el tipo de tumor, lo que sugiere que es un marcador significativo en la identificación de cáncer.
+     A continuación se presentan los resultados de la correlación para cada uno de los métodos utilizados. Se listan las principales variables predictoras y sus respectivos valores de correlación con la variable objetivo binaria.
 
-       - **Omega score**:
-         - **Correlación**: 0.146759
-         - **Interpretación**: La correlación positiva es moderada, lo que indica que el Omega score puede tener cierta utilidad en la diferenciación entre muestras con y sin cáncer.
+     #### Método 1: Correlación de Pearson
+     | Variable                | Valor    |
+     | ----------------------- | -------- |
+     | OPN (pg/ml)             | 0.458352 |
+     | Prolactin (pg/ml)       | 0.324378 |
+     | TIMP-1 (pg/ml)          | 0.300539 |
+     | GDF15 (ng/ml)           | 0.247428 |
+     | HGF (pg/ml)             | 0.242512 |
+     | Myeloperoxidase (ng/ml) | 0.221877 |
+     | FGF2 (pg/ml)            | 0.192212 |
+     | IL-6 (pg/ml)            | 0.186625 |
+     | Galectin-3 (ng/ml)      | 0.180836 |
+     | Angiopoietin-2 (pg/ml)  | 0.170233 |
+     | OPG (ng/ml)             | 0.147721 |
+     | Omega score             | 0.146759 |
+     | HE4 (pg/ml)             | 0.139689 |
+     | Follistatin (pg/ml)     | 0.137546 |
+     | CEA (pg/ml)             | 0.126718 |
 
-       - **Prolactin (pg/ml)**:
-         - **Correlación**: 0.324378
-         - **Interpretación**: Prolactin presenta una correlación positiva moderada con el tipo de tumor, sugiriendo que podría ser relevante en la detección de cáncer.
+     #### Método 2: KBinsDiscretizer
+     | Variable                | Valor    |
+     | ----------------------- | -------- |
+     | IL-8 (pg/ml)            | 0.578037 |
+     | OPN (pg/ml)             | 0.571791 |
+     | IL-6 (pg/ml)            | 0.480112 |
+     | GDF15 (ng/ml)           | 0.474477 |
+     | Prolactin (pg/ml)       | 0.452567 |
+     | HGF (pg/ml)             | 0.447965 |
+     | Omega score             | 0.363410 |
+     | Myeloperoxidase (ng/ml) | 0.344990 |
+     | sEGFR (pg/ml)           | 0.320824 |
+     | CA19-9 (U/ml)           | 0.311742 |
+     | TGFa (pg/ml)            | 0.302511 |
+     | TIMP-1 (pg/ml)          | 0.302504 |
+     | CEA (pg/ml)             | 0.300193 |
+     | CA-125 (U/ml)           | 0.295434 |
 
-       - **CEA (pg/ml)**:
-         - **Correlación**: 0.126718
-         - **Interpretación**: La correlación positiva baja indica una influencia limitada en la diferenciación de muestras de cáncer.
+     #### Método 3: Árbol de decisión (max_depth = 15)
+     | Variable                | Valor    |
+     | ----------------------- | -------- |
+     | OPN (pg/ml)             | 0.575480 |
+     | IL-6 (pg/ml)            | 0.483620 |
+     | IL-8 (pg/ml)            | 0.464828 |
+     | HGF (pg/ml)             | 0.454991 |
+     | Prolactin (pg/ml)       | 0.453270 |
+     | Omega score             | 0.378112 |
+     | GDF15 (ng/ml)           | 0.365248 |
+     | CYFRA 21-1 (pg/ml)      | 0.356245 |
+     | Myeloperoxidase (ng/ml) | 0.351481 |
+     | sEGFR (pg/ml)           | 0.319982 |
+     | CA-125 (U/ml)           | 0.312094 |
+     | CEA (pg/ml)             | 0.308045 |
+     | TIMP-1 (pg/ml)          | 0.301340 |
+     | CA19-9 (U/ml)           | 0.266444 |
+     | Angiopoietin-2 (pg/ml)  | 0.233881 |
 
-       - **Myeloperoxidase (ng/ml)**:
-         - **Correlación**: 0.221877
-         - **Interpretación**: Muestra una correlación positiva moderada, indicando que puede tener relevancia en la identificación de cáncer.
+     #### Análisis y Comparación de Métodos
 
-       - **TIMP-1 (pg/ml)**:
-         - **Correlación**: 0.300539
-         - **Interpretación**: TIMP-1 presenta una correlación positiva moderada, sugiriendo que es un marcador útil para la diferenciación de muestras de cáncer.
+     **Método 1 (Correlación de Pearson):**
 
-       ###### Correlaciones Entre Marcadores
+     - La correlación de Pearson se utiliza para medir la relación lineal entre dos variables continuas. Este método es directo y sencillo, pero su principal limitación es que solo captura relaciones lineales, ignorando cualquier relación no lineal entre las variables.
+     - Los resultados muestran que la variable "OPN (pg/ml)" tiene la mayor correlación (0.458352) con la variable objetivo binaria. Otras variables como "Prolactin (pg/ml)" y "TIMP-1 (pg/ml)" también muestran correlaciones moderadas.
 
-       - **CA19-9 (U/ml) y CA-125 (U/ml)**:
-         - **Correlación**: 0.320058
-         - **Interpretación**: Muestran una correlación positiva moderada, lo que indica que ambos marcadores tienden a aumentar juntos en presencia de cáncer.
+     **Método 2 (KBinsDiscretizer):**
 
-       - **HGF (pg/ml) y OPN (pg/ml)**:
-         - **Correlación**: 0.403077
-         - **Interpretación**: Presentan una correlación positiva moderada, sugiriendo que estos dos marcadores están relacionados y pueden aumentar conjuntamente en muestras de cáncer.
+     - El KBinsDiscretizer convierte variables continuas en discretas, permitiendo así capturar relaciones que podrían ser no lineales. Este método es útil cuando se sospecha que las relaciones no son estrictamente lineales.
+     - En este caso, "IL-8 (pg/ml)" presenta la mayor correlación (0.578037), seguido por "OPN (pg/ml)" (0.571791) y "IL-6 (pg/ml)" (0.480112). Las correlaciones son generalmente más altas que las obtenidas con el método de Pearson, lo que indica que discretizar las variables puede capturar relaciones más fuertes.
 
-       - **OPN (pg/ml) y TIMP-1 (pg/ml)**:
-         - **Correlación**: 0.490956
-         - **Interpretación**: Tienen una correlación positiva alta, lo que indica una fuerte relación entre estos marcadores en el contexto del cáncer.
+     **Método 3 (Árbol de decisión):**
 
-       - **CEA (pg/ml) y Omega score**:
-         - **Correlación**: 0.208276
-         - **Interpretación**: La correlación positiva moderada sugiere que ambos marcadores pueden estar relacionados en la identificación de cáncer.
+     - Utilizar un árbol de decisión para discretizar las variables permite capturar relaciones no lineales y complejas entre las variables predictoras y la variable objetivo. Esta técnica puede ser más adecuada cuando se tienen variables con relaciones complejas.
+     - Los resultados indican que "OPN (pg/ml)" sigue siendo una de las variables con mayor correlación (0.575480), pero "IL-6 (pg/ml)" y "IL-8 (pg/ml)" también muestran correlaciones significativas. La inclusión de "CYFRA 21-1 (pg/ml)" y otras variables sugiere que el árbol de decisión captura una variedad de relaciones no lineales.
 
-       - **Myeloperoxidase (ng/ml) y HGF (pg/ml)**:
-         - **Correlación**: 0.41062
-         - **Interpretación**: Muestran una correlación positiva moderada, lo que indica que estos marcadores tienden a aumentar juntos en presencia de cáncer.
+     #### Conclusión
 
-       - **Prolactin (pg/ml) y Omega score**:
-         - **Correlación**: 0.085961
-         - **Interpretación**: La correlación es baja, indicando una relación limitada entre estos marcadores en el contexto del cáncer.
+     La comparación de los tres métodos de correlación destaca la importancia de considerar múltiples enfoques al analizar las relaciones entre variables predictoras y una variable objetivo binaria. Mientras que la correlación de Pearson es sencilla y directa, puede no ser suficiente para capturar relaciones complejas. El uso de discretizadores como el KBinsDiscretizer y los árboles de decisión permite descubrir relaciones más fuertes y no lineales que podrían ser pasadas por alto por métodos lineales.
 
-       - **Prolactin (pg/ml) y TIMP-1 (pg/ml)**:
-         - **Correlación**: -0.00351
-         - **Interpretación**: La correlación negativa muy baja sugiere que no hay una relación significativa entre estos dos marcadores.
-
-       Estas observaciones destacan las relaciones entre diferentes marcadores y su relevancia para la identificación de muestras de cáncer, proporcionando una base para la selección de características en el desarrollo de modelos predictivos.
+     En resumen, para obtener una visión más completa y precisa de las relaciones entre variables, es crucial utilizar una combinación de métodos de análisis que incluyan tanto enfoques lineales como no lineales. Esta estrategia asegura que se capturen todas las posibles relaciones relevantes en los datos, mejorando así la calidad y la interpretabilidad del análisis.
 
    
 
@@ -671,6 +682,353 @@ La arquitectura tecnológica utilizada en este proyecto abarca desde la adquisic
 El uso de librerías robustas y entornos interactivos como Jupyter Notebooks ha facilitado el desarrollo y la replicabilidad del proyecto, asegurando que los resultados sean precisos y reproducibles. Este enfoque holístico proporciona una base sólida para futuras investigaciones y aplicaciones en el ámbito de la detección temprana del cáncer mediante análisis de biomarcadores sanguíneos.
 
 
+
+## ## Modelización
+
+El objetivo de esta sección es detallar de manera exhaustiva y científica el proceso de modelización llevado a cabo para la detección de cáncer utilizando datos de biomarcadores. A continuación, se describen las técnicas utilizadas, el proceso de evaluación y los modelos construidos, junto con los resultados analíticos obtenidos.
+
+#### Técnicas Utilizadas de Aprendizaje Supervisado
+
+Se emplearon diversas técnicas de aprendizaje supervisado, abarcando desde modelos lineales hasta métodos de ensamblado y redes neuronales. Las principales técnicas utilizadas fueron:
+
+1. **Regresión Lineal**
+2. **Regresión Logística**
+3. **Árbol de Decisión**
+4. **Bosques Aleatorios (Random Forest)**
+5. **KNN (K-Nearest Neighbors)**
+6. **Máquinas de Soporte Vectorial (SVM)**
+7. **Naive Bayes (Gaussian y Bernoulli)**
+8. **AdaBoost**
+9. **Gradient Boosting**
+10. **Redes Neuronales (ANN, MLP, RNN)**
+11. **Extreme Learning Machine (ELM)**
+12. **Regresión Polinomial**
+
+Cada técnica se evaluó en términos de precisión, recall, F1-score y otras métricas relevantes para asegurar la robustez y generalización de los modelos.
+
+#### Proceso de Evaluación
+
+##### Validación Cruzada
+
+Para evaluar la validez de los modelos, se utilizó la validación cruzada, una técnica que permite medir el rendimiento del modelo de manera más precisa y confiable. Esta técnica divide el conjunto de datos en varios subconjuntos (folds) y entrena el modelo múltiples veces, cada vez utilizando un subconjunto diferente como conjunto de prueba y los restantes como conjunto de entrenamiento.
+
+Las métricas de validación cruzada empleadas incluyeron:
+- **Accuracy**: Proporción de predicciones correctas sobre el total de predicciones.
+- **Precision**: Proporción de verdaderos positivos sobre el total de predicciones positivas.
+- **Recall**: Proporción de verdaderos positivos sobre el total de positivos reales.
+- **F1-Score**: Media armónica de precision y recall, proporcionando un balance entre ambas métricas.
+- **AUC-ROC**: Área bajo la curva ROC, que evalúa la capacidad del modelo para distinguir entre clases.
+
+##### Métricas de Evaluación
+
+Además de la validación cruzada, se realizaron evaluaciones adicionales en conjuntos de datos separados para entrenamiento, validación y prueba. Las métricas utilizadas fueron:
+- **MSE (Mean Squared Error)**
+- **R-squared (R²)**
+- **Adjusted Rand Index**
+
+#### Modelos
+
+##### 1. **Regresión Lineal**
+
+- **Descripción**: La regresión lineal se utilizó para modelar la relación entre los biomarcadores y la probabilidad de detección de cáncer.
+- **Resultados**:
+  - **Training Set**: Accuracy: 79.52%, F1-Score: 79.50%
+  - **Validation Set**: Accuracy: 81.59%, F1-Score: 81.55%
+  - **Test Set**: Accuracy: 79.40%, F1-Score: 79.17%
+
+##### 2. **Regresión Logística**
+
+- **Descripción**: Este modelo se empleó para predecir la presencia de cáncer mediante la probabilidad de un evento binario.
+- **Resultados**:
+  - **Training Set**: Accuracy: 83.56%, F1-Score: 83.63%
+  - **Validation Set**: Accuracy: 82.69%, F1-Score: 82.71%
+  - **Test Set**: Accuracy: 82.69%, F1-Score: 82.70%
+
+##### 3. **Árbol de Decisión**
+
+- **Descripción**: Se optimizaron los hiperparámetros del árbol de decisión mediante búsqueda en rejilla.
+- **Resultados**:
+  - **Training Set**: Accuracy: 94.31%, F1-Score: 94.31%
+  - **Validation Set**: Accuracy: 85.44%, F1-Score: 85.38%
+  - **Test Set**: Accuracy: 85.44%, F1-Score: 85.44%
+
+##### 4. **Bosques Aleatorios (Random Forest)**
+
+- **Descripción**: Se utilizó RandomizedSearchCV para encontrar los mejores hiperparámetros.
+- **Resultados**:
+  - **Training Set**: Accuracy: 100.0%, F1-Score: 100.0%
+  - **Validation Set**: Accuracy: 89.29%, F1-Score: 89.23%
+  - **Test Set**: Accuracy: 90.93%, F1-Score: 90.91%
+
+##### 5. **KNN (K-Nearest Neighbors)**
+
+- **Descripción**: Se evaluaron diferentes valores de K y se optimizaron los hiperparámetros.
+- **Resultados**:
+  - **Training Set**: Accuracy: 85.22%, F1-Score: 85.27%
+  - **Validation Set**: Accuracy: 78.57%, F1-Score: 78.59%
+  - **Test Set**: Accuracy: 79.40%, F1-Score: 79.43%
+
+##### 6. **Máquinas de Soporte Vectorial (SVM)**
+
+- **Descripción**: Se utilizó GridSearchCV para encontrar los mejores parámetros.
+- **Resultados**:
+  - **Training Set**: Accuracy: 84.66%, F1-Score: 84.72%
+  - **Validation Set**: Accuracy: 82.14%, F1-Score: 82.13%
+  - **Test Set**: Accuracy: 82.14%, F1-Score: 82.18%
+
+##### 7. **Naive Bayes (Gaussian y Bernoulli)**
+
+- **Descripción**: Se emplearon variantes de Gaussian y Bernoulli para evaluar su rendimiento en la detección de cáncer.
+- **Resultados Gaussian**:
+  - **Training Set**: Accuracy: 75.94%, F1-Score: 75.43%
+  - **Validation Set**: Accuracy: 76.65%, F1-Score: 76.15%
+  - **Test Set**: Accuracy: 75.82%, F1-Score: 75.24%
+- **Resultados Bernoulli**:
+  - **Training Set**: Accuracy: 81.45%, F1-Score: 81.52%
+  - **Validation Set**: Accuracy: 79.12%, F1-Score: 79.11%
+  - **Test Set**: Accuracy: 82.69%, F1-Score: 82.72%
+
+##### 8. **AdaBoost**
+
+- **Descripción**: Se empleó un clasificador débil (Decision Tree) y se optimizaron los hiperparámetros.
+- **Resultados**:
+  - **Training Set**: Accuracy: 100.0%, F1-Score: 100.0%
+  - **Validation Set**: Accuracy: 89.01%, F1-Score: 88.99%
+  - **Test Set**: Accuracy: 92.86%, F1-Score: 92.86%
+
+##### 9. **Gradient Boosting**
+
+- **Descripción**: Se optimizaron los hiperparámetros mediante búsqueda en rejilla.
+- **Resultados**:
+  - **Training Set**: Accuracy: 100.0%, F1-Score: 100.0%
+  - **Validation Set**: Accuracy: 94.51%, F1-Score: 94.50%
+  - **Test Set**: Accuracy: 93.13%, F1-Score: 93.13%
+
+##### 10. **Redes Neuronales (ANN, MLP, RNN)**
+
+- **Descripción**: Se entrenaron diferentes arquitecturas de redes neuronales para capturar patrones complejos en los datos.
+- **Resultados ANN**:
+  - **Training Set**: Accuracy: 83.93%, F1-Score: 83.99%
+  - **Validation Set**: Accuracy: 82.97%, F1-Score: 82.98%
+  - **Test Set**: Accuracy: 83.52%, F1-Score: 83.54%
+- **Resultados MLP**:
+  - **Training Set**: Accuracy: 84.22%, F1-Score: 84.45%
+  - **Validation Set**: Accuracy: 83.24%, F1-Score: 83.26%
+  - **Test Set**: Accuracy: 83.52%, F1-Score: 83.54%
+- **Resultados RNN**:
+  - **Training Set**: Accuracy: 85.31%, F1-Score: 85.33%
+  - **Validation Set**: Accuracy: 81.87%, F1-Score: 81.81%
+  - **Test Set**: Accuracy: 83.52%, F1-Score: 83.55%
+
+##### 11. **Extreme Learning Machine (ELM)**
+
+- **Descripción**: Se utilizó ELM para entrenar un modelo de red neuronal con una única capa oculta.
+- **Resultados**:
+  - **Training Set**: Accuracy: 84.21%, F1-Score: 84.25%
+  - **Validation Set**: Accuracy: 81.59%, F1-Score: 81.59
+
+##### 12. **Perceptrón Multicapa (MLP)**
+
+- **Descripción**: El perceptrón multicapa (MLP) es un tipo de red neuronal feedforward que se entrenó para capturar patrones complejos en los datos de biomarcadores mediante varias capas ocultas con funciones de activación no lineales.
+- **Resultados**:
+  - **Training Set**: Accuracy: 84.39%, F1-Score: 84.45%
+  - **Validation Set**: Accuracy: 83.24%, F1-Score: 83.26%
+  - **Test Set**: Accuracy: 83.52%, F1-Score: 83.54%
+
+##### 13. **Red Neuronal Recurrente (RNN)**
+
+- **Descripción**: Las redes neuronales recurrentes (RNN) fueron utilizadas para capturar dependencias temporales en los datos de biomarcadores. Se emplearon capas recurrentes con activación 'relu' para procesar las secuencias de datos.
+
+- **Resultados**:
+  - **Training Set**: Accuracy: 85.31%, F1-Score: 85.33%
+  
+  - **Validation Set**: Accuracy: 81.87%, F1-Score: 81.81%
+  
+  - **Test Set**: Accuracy: 83.52%, F1-Score: 83.55%
+  
+    
+  
+    - Estas técnicas avanzadas de redes neuronales demostraron ser efectivas en la modelización de datos complejos, proporcionando resultados sólidos y destacando su capacidad para capturar relaciones no lineales y temporales en los datos de biomarcadores para la detección de cáncer.
+
+
+
+#### Técnicas Utilizadas de Aprendizaje No Supervisado
+
+Se emplearon diversas técnicas de aprendizaje no supervisado, abarcando métodos de clustering y reducción de dimensionalidad. Las principales técnicas utilizadas fueron:
+
+1. **KMeans**
+2. **Mean Shift**
+3. **DBSCAN**
+4. **Gaussian Mixture Model (GMM)**
+5. **Clustering Jerárquico**
+6. **Algoritmo AnDE (Anomaly Detection Ensemble)**
+7. **Detección de Anomalías (Isolation Forest)**
+8. **Reducción de Dimensionalidad mediante SVD (Singular Value Decomposition)**
+9. **Reducción de Dimensionalidad mediante PCA (Principal Component Analysis)**
+10. **Análisis de Componentes Independientes (ICA)**
+11. **Análisis Discriminante Lineal (LDA)**
+
+#### Proceso de Evaluación
+
+##### Validación Cruzada
+
+Para evaluar la validez de los modelos no supervisados, se utilizó una combinación de métricas que permiten medir el rendimiento de los algoritmos de clustering y detección de anomalías de manera precisa y confiable. Las métricas de evaluación empleadas incluyeron:
+
+- **Silhouette Score**: Mide cuán similares son los objetos en un clúster en comparación con los objetos de otros clústeres. Un valor más alto indica clústeres más definidos.
+- **Davies-Bouldin Index**: Promedio de las tasas de similitud de cada clúster con el clúster más similar. Un valor más bajo indica clústeres más definidos.
+- **Calinski-Harabasz Index**: Proporción de la suma de la dispersión entre clústeres y la dispersión dentro de los clústeres. Un valor más alto indica clústeres más definidos.
+
+##### Métricas de Evaluación
+
+Se realizaron evaluaciones adicionales en conjuntos de datos separados para entrenamiento, validación y prueba, utilizando las siguientes métricas:
+
+- **Silhouette Score**
+- **Davies-Bouldin Index**
+- **Calinski-Harabasz Index**
+- **Global Score**: Métrica compuesta que combina las anteriores para ofrecer una visión general del rendimiento del modelo.
+
+#### Modelos
+
+#### 1. **KMeans**
+
+- **Descripción**: KMeans es una técnica de clustering que agrupa los datos en K clústeres basados en la similitud de características. 
+- **Proceso**:
+  - Se utilizó la técnica del codo y la puntuación de silueta para determinar el número óptimo de clústeres.
+  - Se entrenó el modelo final con el número óptimo de clústeres utilizando los datos de entrenamiento.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.4276, Davies-Bouldin Index: 1.0653, Calinski-Harabasz Index: 215.2480
+  - **Validation Set**: Silhouette Score: 0.5128, Davies-Bouldin Index: 1.1492, Calinski-Harabasz Index: 72.7247
+  - **Test Set**: Silhouette Score: 0.4927, Davies-Bouldin Index: 0.9756, Calinski-Harabasz Index: 140.3259
+
+#### 2. **Mean Shift**
+
+- **Descripción**: Mean Shift es una técnica de clustering que no requiere especificar el número de clústeres por adelantado. Se basa en encontrar los modos en la densidad de los datos.
+- **Proceso**:
+  - Se utilizó la búsqueda de ancho de banda óptimo en el conjunto de validación.
+  - Se entrenó el modelo final con el ancho de banda óptimo en los datos de entrenamiento.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.4582, Davies-Bouldin Index: 0.5735, Calinski-Harabasz Index: 114.9748
+  - **Validation Set**: Silhouette Score: 0.4821, Davies-Bouldin Index: 0.6987, Calinski-Harabasz Index: 74.6950
+  - **Test Set**: Silhouette Score: 0.4413, Davies-Bouldin Index: 0.8014, Calinski-Harabasz Index: 68.3151
+
+#### 3. **DBSCAN**
+
+- **Descripción**: DBSCAN (Density-Based Spatial Clustering of Applications with Noise) es una técnica de clustering que encuentra clústeres de alta densidad y marca puntos como ruido si están en regiones de baja densidad.
+- **Proceso**:
+  - Se buscó el valor óptimo de epsilon utilizando el conjunto de entrenamiento.
+  - Se entrenó el modelo final con el valor óptimo de epsilon.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.8349, Davies-Bouldin Index: 1.7217, Calinski-Harabasz Index: 170.5236
+  - **Validation Set**: Silhouette Score: 0.8204, Davies-Bouldin Index: 1.6787, Calinski-Harabasz Index: 52.0399
+  - **Test Set**: Silhouette Score: 0.8233, Davies-Bouldin Index: 1.1945, Calinski-Harabasz Index: 88.5002
+
+#### 4. **Gaussian Mixture Model (GMM)**
+
+- **Descripción**: GMM es una técnica probabilística para modelar la distribución de los datos como una mezcla de múltiples distribuciones gaussianas.
+- **Proceso**:
+  - Se utilizó GridSearchCV para encontrar los mejores parámetros del modelo.
+  - Se entrenó el modelo con los mejores parámetros encontrados.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.5892, Davies-Bouldin Index: 1.6353, Calinski-Harabasz Index: 215.7722
+  - **Validation Set**: Silhouette Score: 0.6177, Davies-Bouldin Index: 1.7655, Calinski-Harabasz Index: 65.4537
+  - **Test Set**: Silhouette Score: 0.6531, Davies-Bouldin Index: 1.4111, Calinski-Harabasz Index: 112.5643
+
+#### 5. **PCA (Principal Component Analysis)**
+
+- **Descripción**: PCA es una técnica de reducción de dimensionalidad que transforma los datos a un nuevo espacio con menos dimensiones, preservando la mayor cantidad posible de varianza original.
+- **Proceso**:
+  - Se determinó el número óptimo de componentes principales que explican al menos el 95% de la varianza.
+  - Se aplicó el modelo PCA a los datos y se utilizaron los datos transformados para el clustering con KMeans.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.5894, Davies-Bouldin Index: 1.6258, Calinski-Harabasz Index: 215.8816
+  - **Validation Set**: Silhouette Score: 0.6225, Davies-Bouldin Index: 1.7704, Calinski-Harabasz Index: 65.4857
+  - **Test Set**: Silhouette Score: 0.6531, Davies-Bouldin Index: 1.4111, Calinski-Harabasz Index: 112.5643
+
+#### 6. **Análisis de Componentes Independientes (ICA)**
+
+- **Descripción**: ICA es una técnica de separación de señales que busca descomponer una señal multivariada en componentes estadísticamente independientes.
+- **Proceso**:
+  - Se aplicó ICA a los datos y se utilizó Isolation Forest para detectar anomalías en los datos transformados.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.6568, Davies-Bouldin Index: 2.0301, Calinski-Harabasz Index: 168.6725
+  - **Validation Set**: Silhouette Score: 0.6507, Davies-Bouldin Index: 2.0672, Calinski-Harabasz Index: 56.1600
+  - **Test Set**: Silhouette Score: 0.6903, Davies-Bouldin Index: 1.6556, Calinski-Harabasz Index: 93.0848
+
+#### 7. **Clustering Jerárquico**
+
+- **Descripción**: El clustering jerárquico es una técnica que construye una jerarquía de clústeres mediante la fusión o división iterativa de clústeres.
+- **Proceso**:
+  - Se determinó el número óptimo de clústeres utilizando el conjunto de entrenamiento.
+  - Se entrenó el modelo final con el número óptimo de clústeres.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.8363, Davies-Bouldin Index: 1.3482, Calinski-Harabasz Index: 197.3254
+  - **Validation Set**: Silhouette Score: 0.8887, Davies-Bouldin Index: 0.0743, Calinski-Harabasz Index: 82.0443
+  - **Test Set**: Silhouette Score: 0.6206, Davies-Bouldin Index: 1.4987, Calinski-Harabasz Index: 100.8270
+
+#### 8. **Algoritmo AnDE**
+
+- **Descripción**: AnDE (Anomaly Detection Ensemble) es una técnica para detectar anomalías basada en la densidad de los puntos y un umbral determinado.
+- **Proceso**:
+  - Se entrenó el modelo AnDE con los datos de entrenamiento y se calculó el umbral óptimo basado en la densidad.
+  - Se aplicó el modelo para detectar anomalías en los conjuntos de entrenamiento, validación y prueba.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.7439, Davies-Bouldin Index: 2.0779, Calinski-Harabasz Index: 157.0921
+  - **Validation Set**: Silhouette Score: 0.6827, Davies-Bouldin Index: 2.0878, Calinski-Harabasz Index: 53.4775
+  - **Test Set**: Silhouette Score: 0.7369, Davies-Bouldin Index: 1.6303, Calinski-Harabasz Index: 91.8491
+
+#### 9. **Detección de Anomalías (Isolation Forest)**
+
+- **Descripción**: Isolation Forest es una técnica de detección de anomalías que construye árboles de aislamiento para identificar puntos de datos anómalos.
+- **Proceso**:
+  - Se entrenó el modelo Isolation Forest con los datos de entrenamiento.
+  - Se detectaron anomalías en los conjuntos de entrenamiento, validación y prueba.
+- **Resultados**:
+  - **Training Set**: Silhouette Score: 0.6577, Davies-Bouldin Index: 1.9636, Calinski-Harabasz Index: 177.3739
+  - **Validation Set**: Silhouette Score: 0.6336, Davies-Bouldin Index: 2.0642, Calinski-Harabasz Index
+
+#### 10. Reducción de Dimensionalidad SVD
+
+* **Descripción**: La técnica de Reducción de Dimensionalidad mediante Descomposición en Valores Singulares (SVD) se utiliza para reducir el número de características en los datos, manteniendo la mayor cantidad de información posible.
+
+* **Proceso**:
+
+  1. **Determinación de Componentes Óptimos**:
+
+  - Se ajustó un modelo SVD preliminar para calcular la varianza explicada acumulada.
+  - Se seleccionó el número de componentes que explican al menos el 95% de la varianza.
+
+  2. **Aplicación del Modelo SVD**:
+
+  - Se transformaron los datos de entrenamiento, validación y prueba al nuevo espacio reducido utilizando el modelo SVD ajustado.
+
+  3. **Clustering con KMeans**:
+
+  - Se determinó el número óptimo de clústeres utilizando la técnica del codo y la puntuación de silueta.
+  - Se aplicó el algoritmo KMeans a los datos reducidos para realizar el clustering.
+
+* **Resultados**:
+
+  - **Training Set**:
+    - Silhouette Score: 0.5894
+    - Davies-Bouldin Index: 1.6258
+    - Calinski-Harabasz Index: 215.8816
+
+
+  - **Validation Set**:
+    - Silhouette Score: 0.6225
+    - Davies-Bouldin Index: 1.7704
+    - Calinski-Harabasz Index: 65.4857
+
+
+  - **Test Set**:
+    
+    - Silhouette Score: 0.6531
+    
+    - Davies-Bouldin Index: 1.4111
+    
+    - Calinski-Harabasz Index: 112.5643
+    
+      
 
 ## ## Bibliografía y recursos
 
