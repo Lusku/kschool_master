@@ -44,29 +44,29 @@ class MyApp:
 
         # Variables y sus valores predefinidos para la primera pestaña
         self.variables_cancer = {
-            'CA19-9 (U/ml)': tk.StringVar(),
-            'CA-125 (U/ml)': tk.StringVar(),
-            'HGF (pg/ml)': tk.StringVar(),
             'OPN (pg/ml)': tk.StringVar(),
-            'Omega score': tk.StringVar(),
+            'IL-6 (pg/ml)': tk.StringVar(),
+            'IL-8 (pg/ml)': tk.StringVar(),
+            'HGF (pg/ml)': tk.StringVar(),
             'Prolactin (pg/ml)': tk.StringVar(),
-            'CEA (pg/ml)': tk.StringVar(),
+            'Omega score': tk.StringVar(),
+            'GDF15 (ng/ml)': tk.StringVar(),
+            'CYFRA 21-1 (pg/ml)': tk.StringVar(),
             'Myeloperoxidase (ng/ml)': tk.StringVar(),
-            'TIMP-1 (pg/ml)': tk.StringVar()
-            # Puedes añadir más variables según sea necesario
+            'sEGFR (pg/ml)': tk.StringVar()
         }
 
-        # Rangos comunes para cada variable en la primera pestaña
         self.ranges_cancer = {
-            'CA19-9 (U/ml)': '14-12491',
-            'CA-125 (U/ml)': '4-3600',
-            'HGF (pg/ml)': '158-11432',
-            'OPN (pg/ml)': '3218-433959',
-            'Omega score': '0-333',
+            'OPN (pg/ml)': '3218-433960',
+            'IL-6 (pg/ml)': '3-2818',
+            'IL-8 (pg/ml)': '8-5290',
+            'HGF (pg/ml)': '158-11433',
             'Prolactin (pg/ml)': '806-608432',
-            'CEA (pg/ml)': '426-337245',
+            'Omega score': '0-333',
+            'GDF15 (ng/ml)': '0.04-24',
+            'CYFRA 21-1 (pg/ml)': '1816-1475727',
             'Myeloperoxidase (ng/ml)': '1-1001',
-            'TIMP-1 (pg/ml)': '482-157461'
+            'sEGFR (pg/ml)': '198-8577'
         }
 
         # Variables y sus valores predefinidos para la segunda pestaña
@@ -222,7 +222,8 @@ class MyApp:
         model_var = tk.StringVar()
         model_combobox = ttk.Combobox(tab, textvariable=model_var)
         model_combobox['values'] = (Constantes.REGRESION_LINEAL, Constantes.REGRESION_LOGISTICA,
-                                    Constantes.ADABOOST, Constantes.RANDOM_FOREST, Constantes.GRADIENT_BOOSTING)
+                                    Constantes.RANDOM_FOREST, Constantes.KNN, Constantes.GRADIENT_BOOSTING,
+                                    Constantes.ADABOOST, Constantes.VOTING_CLASSIFIER)
         model_combobox.current(0)  # Seleccionar el primer modelo por defecto
         model_combobox.pack(pady=10)
 
@@ -243,7 +244,7 @@ class MyApp:
         if model_name == Constantes.REGRESION_LINEAL:
             result, prob = md.RegressionLineal(df_prep)
         elif model_name == Constantes.REGRESION_LOGISTICA:
-            result, prob = md.RegressionLogistic(df_prep)
+            result, prob = md.RegressionLogistica(df_prep)
         elif model_name == Constantes.RANDOM_FOREST:
             result, prob = md.RandomForest(df_prep)
         elif model_name == Constantes.KNN:
@@ -256,10 +257,12 @@ class MyApp:
             result, prob = md.VotingClassifier(df_prep)
         else:
             result, prob = None, None
+        result_message = ""
+        if prob is not None and not df.empty:
+            # Mostrar el resultado en una ventana emergente
+            result_message = f"Tiene una probabilidad estimada del : {round(float(prob)*100, ndigits=2)}% de tener cáncer."
 
-        # Mostrar el resultado en una ventana emergente
-        result_message = f"\nTiene una probabilidad estimada del : {round(float(prob)*100, ndigits=2)}% de tener cáncer."
-        result_message += f"Predicción: {'Tiene cáncer' if result == 1 else 'No tiene cáncer'}"
+        result_message += f"\nPredicción: {'Tiene cáncer' if result == 1 else 'No tiene cáncer'}"
         tk.messagebox.showinfo("Resultado", result_message)
 
     def calculate_tipo_cancer(self, variables, model_var):
@@ -300,8 +303,13 @@ class MyApp:
 
     def show_info(self):
         info_message = "Aplicación para detección de cáncer\n\n"
-        info_message += "Esta es una aplicación de prueba que utiliza diferentes modelos de aprendizaje supervisado para predecir la presencia de cáncer en función de varias biomarcas.\n\n"
-        info_message += "Puede generar valores aleatorios para las biomarcas y seleccionar un modelo para realizar la predicción."
+        info_message += "Esta aplicación de prueba utiliza diferentes modelos de aprendizaje supervisado para predecir la presencia de cáncer en función de varias biomarcas.\n\n"
+        info_message += "Puede escogerse entre diferentes modelos de aprendizaje supervisado para realizar la predicción. Se encuentran ordenados de menor a mayor efectividad\n"
+        info_message += "También se puede permutar a la pestaña 'Predicción del tipo de cancer' para realizar la predecir que tipo de cáncer se tiene en función de los parámetros introducidos."
+        info_message += ("Puede generar valores aleatorios para las biomarcadores siguiendo un modelo de generación de datos sintéticos CTGAN que está entrenado para generar datos siguiendo una distribución"
+                         "pareja a los datos utilizados durante el estudio")
+        info_message += ("Tras presionar el botón 'Calcular' se muestra en una ventana emergente  la probabilidad de tener cáncer, que variará según el modelo escogido, y "
+                         "la predicción del modelo.\n\n")
 
         tk.messagebox.showinfo("Información", info_message)
 

@@ -649,8 +649,8 @@ def process_data(split = True, process_data = True, df_sample = None):
     4. df_discretizado_full.drop(columns=['Tumor type']) --> Acorde a la Figura S3 (usando todas las variables) discretizado con arbol de decisión
     5. df_discretizado_reduced.drop(columns=['Tumor type']) --> Acorde a la Figura S3; discretizado con arbol de decisión
     '''
-    y = df_reduced['Tumor type']
-    X = df_reduced.drop(columns='Tumor type')
+    y = df_reduced_segundo_enfoque['Tumor type']
+    X = df_reduced_segundo_enfoque.drop(columns='Tumor type')
     if process_data == True:
         if split == True :
             X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y, train_size=0.6, val_size=0.2, test_size=0.2,
