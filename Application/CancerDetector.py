@@ -1,3 +1,4 @@
+import os
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -11,6 +12,10 @@ class MyApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Aplicación para detección de cáncer")
+
+        trainer = fn.CTGANTrainer(fn.param_grid, fn.model_path, pac=1)
+        model = trainer.load_model()
+        self.ctgan_model = model
 
         # Crear el Notebook para las pestañas
         self.notebook = ttk.Notebook(self.root)
@@ -225,7 +230,39 @@ class MyApp:
         btn_calculate = ttk.Button(tab, text="Calcular", command=lambda: calculate_command(variables, model_var))
         btn_calculate.pack(pady=10)
 
+
+
     def calculate_cancer(self, variables, model_var):
+        # Obtener los valores de las variables
+        data = {variable: [float(var_value.get())] for variable, var_value in variables.items()}
+        df = pd.DataFrame(data)
+        df_prep = fn.process_data(split = True, process_data = True, df_sample = df)
+        print(df_prep.columns)
+        # Seleccionar el modelo basado en la opción del combobox
+        model_name = model_var.get()
+        if model_name == Constantes.REGRESION_LINEAL:
+            result, prob = md.RegressionLineal(df_prep)
+        elif model_name == Constantes.REGRESION_LOGISTICA:
+            result, prob = md.RegressionLogistic(df_prep)
+        elif model_name == Constantes.RANDOM_FOREST:
+            result, prob = md.RandomForest(df_prep)
+        elif model_name == Constantes.KNN:
+            result, prob = md.KNN(df_prep)
+        elif model_name == Constantes.ADABOOST:
+            result, prob = md.AdaBoost(df_prep)
+        elif model_name == Constantes.GRADIENT_BOOSTING:
+            result, prob = md.GradientBoosting(df_prep)
+        elif model_name == Constantes.VOTING_CLASSIFIER:
+            result, prob = md.VotingClassifier(df_prep)
+        else:
+            result, prob = None, None
+
+        # Mostrar el resultado en una ventana emergente
+        result_message = f"\nTiene una probabilidad estimada del : {round(float(prob)*100, ndigits=2)}% de tener cáncer."
+        result_message += f"Predicción: {'Tiene cáncer' if result == 1 else 'No tiene cáncer'}"
+        tk.messagebox.showinfo("Resultado", result_message)
+
+    def calculate_tipo_cancer(self, variables, model_var):
         # Obtener los valores de las variables
         data = {variable: [float(var_value.get())] for variable, var_value in variables.items()}
         df = pd.DataFrame(data)
@@ -245,42 +282,21 @@ class MyApp:
             result, prob = md.RandomForest(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
         elif model_name == Constantes.GRADIENT_BOOSTING:
             result, prob = md.GradientBoosting(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-
-        # Mostrar el resultado en una ventana emergente
-        result_message = f"Predicción: {'Tiene cáncer' if result == 1 else 'No tiene cáncer'}"
-        result_message += f"\nCon una probabilidad estimada de : {round(prob, ndigits=2)}"
-        tk.messagebox.showinfo("Resultado", result_message)
-
-    def calculate_tipo_cancer(self, variables, model_var):
-        # Obtener los valores de las variables
-        data = {variable: [float(var_value.get())] for variable, var_value in variables.items()}
-        df = pd.DataFrame(data)
-
-        # Procesa los datos base
-        X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test = fn.process_data_tipo_cancer()
-
-        # Seleccionar el modelo basado en la opción del combobox
-        model_name = model_var.get()
-        if model_name == Constantes.REGRESION_LINEAL:
-            result, prob = md.RegressionLineal(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-        elif model_name == Constantes.REGRESION_LOGISTICA:
-            result, prob = md.RegresionLogistica(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-        elif model_name == Constantes.ADABOOST:
-            result, prob = md.AdaBoost(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-        elif model_name == Constantes.RANDOM_FOREST:
-            result, prob = md.RandomForest(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-        elif model_name == Constantes.GRADIENT_BOOSTING:
-            result, prob = md.GradientBoosting(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df)
-
         # Mostrar el resultado en una ventana emergente
         result_message = f"Predicción del tipo de cáncer: {result}"
         result_message += f"\nCon una probabilidad estimada de : {round(prob, ndigits=2)}"
         tk.messagebox.showinfo("Resultado", result_message)
 
     def generate_random_values(self, variables, ranges):
-        for variable, var_value in variables.items():
-            min_val, max_val = map(float, ranges[variable].split('-'))
-            var_value.set(round(random.uniform(min_val, max_val),2))
+        if self.ctgan_model is not None:
+            synthetic_sample = self.ctgan_model.sample(1).iloc[0]
+            for variable, var_value in variables.items():
+                if variable in synthetic_sample:
+                    var_value.set(round(synthetic_sample[variable], 2))
+        else:
+            for variable, var_value in variables.items():
+                min_val, max_val = map(float, ranges[variable].split('-'))
+                var_value.set(round(random.uniform(min_val, max_val), 2))
 
     def show_info(self):
         info_message = "Aplicación para detección de cáncer\n\n"
@@ -296,9 +312,18 @@ class Constantes:
     ADABOOST = 'AdaBoost'
     RANDOM_FOREST = 'Random Forest'
     GRADIENT_BOOSTING = 'Gradient Boosting'
-
+    KNN = 'KNN'
+    VOTING_CLASSIFIER = 'Voting Classifier'
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = MyApp(root)
+
+    # Cargar el modelo CTGAN entrenado
+    trainer = fn.CTGANTrainer(fn.param_grid, fn.model_path, pac=1)
+    model = trainer.load_model()
+
+    # Asignar el modelo a la instancia de MyApp
+    app.ctgan_model = model
+
     root.mainloop()

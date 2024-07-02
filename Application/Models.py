@@ -1,3 +1,4 @@
+import os
 import statistics
 
 import pandas as pd
@@ -22,6 +23,8 @@ from sklearn.metrics import mean_squared_error, roc_curve, auc, confusion_matrix
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 import Functions as fn
+import pickle
+import joblib
 
 def RegressionLineal(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df):
     # Crear una instancia del modelo de regresión lineal
@@ -77,55 +80,33 @@ def RegresionLogistica(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_
 
     return y_prod, statistics.mean([gb_train, gb_val, gb_test])
 
-def AdaBoost(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df):
-    from sklearn.ensemble import AdaBoostClassifier
-    from sklearn.tree import DecisionTreeClassifier
-    from sklearn.model_selection import GridSearchCV
+def AdaBoost(df):
+    model_name_1 = 'adaBoost_e1_2.joblib'
+    model_path_1 = os.path.join(fn.get_path(), model_name_1)
+    print('Estoy aqui' + str(model_path_1))
+    # Cargar el modelo con joblib
+    model_adaboost = fn.load_model(model_path_1)
 
-    model_name = "AdaBoost"
-    print(model_name)
+    model_name_2 = 'adaBoost_e2_2.joblib'
+    model_path_2 = os.path.join(fn.get_path(), model_name_2)
 
-    # Inicializar el clasificador débil (stump)
-    base_estimator = DecisionTreeClassifier(max_depth=2)
+    # Cargar el modelo con joblib
+    model_adaboost_2 = fn.load_model(model_path_2)
 
-    # Configurar la búsqueda de hiperparámetros
-    param_grid = {
-        'n_estimators': [50, 100, 200, 250, 300],
-        'learning_rate': [0.01, 0.05, 0.07, 0.10, 0.5, 1.0]
-    }
+    print(model_adaboost)
+    if model_adaboost is None:
+        return None, None
 
-    # Inicializar el modelo AdaBoost
-    ada = AdaBoostClassifier(estimator=base_estimator, n_estimators=50, learning_rate=1.0, random_state=42)
+    # Realizar predicción con el modelo cargado
+    try:
+        y_pred = model_adaboost.predict(df)
+        print('Predicción : ' + str(y_pred))
+        prob = model_adaboost.predict_proba(df)[:, 1] if hasattr(model_adaboost, 'predict_proba') else None
+    except AttributeError as e:
+        print(f"Error al hacer predicción: {e}")
+        return None, None
 
-    grid_search = GridSearchCV(estimator=ada, param_grid=param_grid, cv=5, n_jobs=-1, scoring='accuracy')
-
-    # Entrenar el modelo con búsqueda de hiperparámetros
-    grid_search.fit(X_train_prep, y_train)
-
-    # Obtener los mejores hiperparámetros
-    best_params = grid_search.best_params_
-    print(f"Mejores hiperparámetros: {best_params}")
-
-    # Mejor modelo
-    best_model = grid_search.best_estimator_
-
-    # Cross validation
-    # TODO mostrar_cross_validation(best_model, X_train_prep, y_train)
-
-    # Entrenar el modelo usando los datos de entrenamiento preprocesados
-    best_model.fit(X_train_prep, y_train)
-
-    y_train_pred = best_model.predict(X_train_prep)
-    y_val_pred = best_model.predict(X_val_prep)
-    y_test_pred = best_model.predict(X_test_prep)
-
-    gb_train = fn.mostrar_estadisticas_log(y_train, y_train_pred, "Training")
-    gb_val = fn.mostrar_estadisticas_log(y_val, y_val_pred, "Validation")
-    gb_test = fn.mostrar_estadisticas_log(y_test, y_test_pred, "Test")
-
-    y_prod = best_model.predict(df)
-
-    return y_prod, statistics.mean([gb_train, gb_val, gb_test])
+    return y_pred, prob
 
 
 def randomForest(X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test, df):
