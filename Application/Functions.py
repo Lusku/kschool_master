@@ -1,17 +1,8 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-from scipy.stats import skew, kurtosis
-from scipy.stats import shapiro
-from scipy.stats import normaltest
+import os
+import pickle
 
 from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
-from sklearn.compose import make_column_selector
-from sklearn.impute import SimpleImputer
+
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.feature_selection import mutual_info_classif
 
@@ -19,6 +10,14 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, roc_curve, auc, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, adjusted_rand_score, r2_score, silhouette_score, davies_bouldin_score, calinski_harabasz_score
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
+
+import pandas as pd
+import joblib
+from ctgan import CTGAN
+from sklearn.model_selection import ParameterGrid
+import numpy as np
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import random
 
 
@@ -563,7 +562,7 @@ def encontrar_numero_optimo_clusters(X_train, X_val, model, max_clusters=10, plo
     numero_optimo_clusters = range(2, max_clusters + 1)[np.argmax(global_scores)]
     return numero_optimo_clusters
 
-def process_data():
+def process_data(split = True, process_data = True, df_sample = None):
     # Carga de la URL de donde se encuentran los datos
     # (I) Introducir valor de nombreArchivo y variar la ruta en local donde se guardan los datos
     nombreArchivo = 'Tables_S1_to_S11'  # nombre del archivo del dataset
@@ -650,15 +649,62 @@ def process_data():
     4. df_discretizado_full.drop(columns=['Tumor type']) --> Acorde a la Figura S3 (usando todas las variables) discretizado con arbol de decisión
     5. df_discretizado_reduced.drop(columns=['Tumor type']) --> Acorde a la Figura S3; discretizado con arbol de decisión
     '''
+    y = df_reduced_segundo_enfoque['Tumor type']
+    X = df_reduced_segundo_enfoque.drop(columns='Tumor type')
+    if process_data == True:
+        if split == True :
+            X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y, train_size=0.6, val_size=0.2, test_size=0.2,
+                                                                        random_state=42)
 
-    y = df_reduced['Tumor type']
-    X = df_reduced.drop(columns='Tumor type')
+            numeric_cols = X_train.select_dtypes(include=['float64', 'int']).columns.to_list()
+            cat_cols = X_train.select_dtypes(include=['object', 'category']).columns.to_list()
 
-    X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y, train_size=0.6, val_size=0.2, test_size=0.2,
-                                                                random_state=42)
+            preprocessor = ColumnTransformer(
+                [('scale', StandardScaler(), numeric_cols),
+                 ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_cols)],
+                remainder='passthrough',
+                verbose_feature_names_out=False
+            ).set_output(transform="pandas")
 
-    numeric_cols = X_train.select_dtypes(include=['float64', 'int']).columns.to_list()
-    cat_cols = X_train.select_dtypes(include=['object', 'category']).columns.to_list()
+            # TODO DUDA - Añadir un proceso de discretización? Puede mejorar el resultado. Ver cómo influye usar la función 'discretizar_df_arboles' ó la función sklearn.preprocessing.KBinsDiscretizer
+            X_train_prep = preprocessor.fit_transform(X_train)
+            X_val_prep = preprocessor.transform(X_val)
+            X_test_prep = preprocessor.transform(X_test)
+            if df_sample is not None and not df.empty :
+                df_sample_prep = preprocessor.transform(df_sample)
+                return df_sample_prep
+            X_prep = np.vstack((X_train_prep, X_val_prep, X_test_prep))
+
+            return X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test
+        else :
+            numeric_columns = df_reduced.select_dtypes(include=['number']).columns.to_list()
+            categorical_columns = df_reduced.select_dtypes(include=['object', 'category']).columns.to_list()
+            preprocessor = ColumnTransformer(
+                [('scale', StandardScaler(), numeric_columns),
+                 ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_columns)],
+                remainder='passthrough',
+                verbose_feature_names_out=False).set_output(transform="pandas")
+
+            df_reduced = preprocessor.fit_transform(df_reduced)
+            return df_reduced
+    else :
+            return df_reduced
+
+def preprocess_data(df) :
+    numeric_columns = df.select_dtypes(include=['number']).columns.to_list()
+    categorical_columns = df.select_dtypes(include=['object', 'category']).columns.to_list()
+
+    preprocessor = ColumnTransformer(
+        [('scale', StandardScaler(), numeric_columns),
+         ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_columns)],
+        remainder='passthrough',
+        verbose_feature_names_out=False).set_output(transform="pandas")
+
+    df_reduced = preprocessor.fit_transform(df)
+
+def invert_preprocessor(data_prep):
+    numeric_cols = data_prep.select_dtypes(include=['float64', 'int']).columns.to_list()
+    cat_cols = data_prep.select_dtypes(include=['object', 'category']).columns.to_list()
 
     preprocessor = ColumnTransformer(
         [('scale', StandardScaler(), numeric_cols),
@@ -667,11 +713,126 @@ def process_data():
         verbose_feature_names_out=False
     ).set_output(transform="pandas")
 
-    # TODO DUDA - Añadir un proceso de discretización? Puede mejorar el resultado. Ver cómo influye usar la función 'discretizar_df_arboles' ó la función sklearn.preprocessing.KBinsDiscretizer
-    X_train_prep = preprocessor.fit_transform(X_train)
-    X_val_prep = preprocessor.transform(X_val)
-    X_test_prep = preprocessor.transform(X_test)
+    # Invertir la transformación para los datos numéricos
+    scaler = preprocessor.named_transformers_['scale']
+    numeric_data_transformed = data_prep[numeric_cols]
+    original_numeric_data = scaler.inverse_transform(numeric_data_transformed)
 
-    X_prep = np.vstack((X_train_prep, X_val_prep, X_test_prep))
+    # Invertir la transformación para los datos categóricos
+    onehot = preprocessor.named_transformers_['onehot']
+    encoded_columns = onehot.get_feature_names_out(cat_cols)
+    categorical_data_transformed = data_prep[encoded_columns]
+    original_categorical_data = onehot.inverse_transform(categorical_data_transformed)
 
-    return X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test
+    # Combinar las columnas invertidas con las columnas restantes
+    original_data = pd.DataFrame(original_numeric_data, columns=numeric_cols)
+    for i, col in enumerate(cat_cols):
+        original_data[col] = original_categorical_data[:, i]
+
+    # Combinar las columnas originales si hay columnas que se pasaron sin transformar (remainder='passthrough')
+    if preprocessor.remainder == 'passthrough':
+        passthrough_cols = data_prep.columns.difference(numeric_cols + list(encoded_columns))
+        passthrough_data = data_prep[passthrough_cols]
+        original_data = pd.concat([original_data, passthrough_data.reset_index(drop=True)], axis=1)
+
+    return original_data
+
+def get_path() :
+    # Construir el path para el modelo
+    current_directory = os.path.dirname(__file__)  # Directorio actual del script Functions.py
+    return os.path.join(os.path.dirname(current_directory), 'Modelos supervisados entrenados')
+def load_model_with_pickle(model_path):
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    return model
+
+def load_model(model_path):
+    try:
+        model = joblib.load(model_path)
+        return model
+    except Exception as e:
+        print(f"Error al cargar el modelo: {e}")
+        return None
+class CTGANTrainer:
+    def __init__(self, param_grid, model_path, pac=1):
+        self.param_grid = param_grid
+        self.model_path = model_path
+        self.pac = pac
+
+    def evaluate_ctgan(self, params, X):
+        # Ajustar los parámetros de CTGAN
+        params['pac'] = self.pac
+        model = CTGAN(**params)
+        model.fit(X)
+
+        # Generar una muestra sintética
+        synthetic_data = model.sample(len(X))
+
+        return synthetic_data
+
+    def grid_search(self, X):
+        # Realizar la búsqueda de hiperparámetros
+        best_score = -np.inf
+        best_params = None
+
+        for params in ParameterGrid(self.param_grid):
+            synthetic_data = self.evaluate_ctgan(params, X)
+            score = self.calculate_score(X, synthetic_data)
+            if score > best_score:
+                best_score = score
+                best_params = params
+
+        return best_params
+
+    def calculate_score(self, real_data, synthetic_data):
+        # Aquí puedes implementar la métrica de evaluación que desees
+        # En este caso, se puede comparar alguna métrica entre los datos reales y sintéticos
+        return 0  # Ejemplo simplificado, implementa tu métrica adecuada aquí
+
+    def train_and_save(self, df):
+        # Convertir numpy array de vuelta a DataFrame si es necesario
+        if isinstance(df, np.ndarray):
+            df = pd.DataFrame(df, columns=self.feature_names)
+
+        # Ajustar el preprocesador si es necesario
+        # Asumiendo que ya tienes preprocesado tu dataframe
+
+        # Separar características (X)
+        X = df
+
+        # Buscar los mejores hiperparámetros
+        best_params = self.grid_search(X)
+        print(f"Best parameters found: {best_params}")
+
+        # Entrenar el modelo CTGAN con los mejores hiperparámetros
+        best_params['pac'] = self.pac  # Asegurar que 'pac' esté en los mejores parámetros
+        model = CTGAN(**best_params)
+        model.fit(X)
+
+        # Guardar el modelo entrenado
+        joblib.dump(model, self.model_path)
+
+    def load_model(self):
+        # Cargar el modelo entrenado
+        return joblib.load(self.model_path)
+
+    def generate_sample(self, model, num_samples=1):
+        # Generar datos sintéticos
+        return model.sample(num_samples)
+
+
+# Ejemplo de uso:
+# Definir el grid de hiperparámetros para CTGAN
+param_grid = {
+    'epochs': 200,
+    'batch_size': 500,
+    'discriminator_steps': 1,
+    'verbose': [False]
+}
+current_directory = os.path.dirname(__file__)  # Directorio actual del script Functions.py
+desired_model_directory = os.path.join(os.path.dirname(current_directory), 'Modelo CTGAN')
+model_path = os.path.join(desired_model_directory, 'ctgan_model.pkl')
+
+# Suponiendo que 'df' es el dataframe completo proporcionado
+# Asumiendo que ya tienes df preprocesado y df_reduced sin la variable objetivo
+# target_column = 'Tumor type'  # Columna objetivo
