@@ -1,13 +1,22 @@
+import json
 import os
 import pickle
+from pathlib import Path
+import Functions as functions
 
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
+from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.feature_selection import mutual_info_classif
-
+import lightgbm as lgb
+import xgboost as xgb
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, roc_curve, auc, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, adjusted_rand_score, r2_score, silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from sklearn.metrics import mean_squared_error, roc_curve, auc, confusion_matrix, accuracy_score, precision_score, \
+    recall_score, f1_score, adjusted_rand_score, r2_score, silhouette_score, davies_bouldin_score, \
+    calinski_harabasz_score, classification_report
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 
@@ -19,6 +28,7 @@ import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import random
+import Constantes as const
 
 
 # Functions
@@ -690,6 +700,42 @@ def process_data(split = True, process_data = True, df_sample = None):
     else :
             return df_reduced
 
+def get_preprocessor(df) :
+    numeric_features = const.Constantes.important_features
+
+    numeric_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())
+    ])
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features)
+        ],
+        remainder='passthrough'
+    )
+    return preprocessor
+
+
+def process_data_cancer_type(df):
+    model_name = 'preprocessor.joblib'
+    model_path = os.path.join(functions.get_path(), model_name)
+    print(f"Model Path: {model_path}")  # Imprime la ruta del modelo para verificar
+
+    try:
+        preprocessor = functions.load_model('C:/Users/danie/OneDrive/Documentos/Master/Lusku/TFM/Repositorio compartido/kschool_master/Modelos supervisados entrenados/preprocessor.joblib')
+        if preprocessor is None:
+            raise ValueError(
+                "El preprocesador no se pudo cargar correctamente. Verifica la ruta y el archivo del modelo.")
+        return preprocessor.transform(df)
+    except ImportError as e:
+        print(f"Error al importar un módulo necesario para cargar el modelo: {e}")
+        raise
+    except Exception as e:
+        print(f"Error al cargar o aplicar el preprocesador: {e}")
+        raise
+
+
 def preprocess_data(df) :
     numeric_columns = df.select_dtypes(include=['number']).columns.to_list()
     categorical_columns = df.select_dtypes(include=['object', 'category']).columns.to_list()
@@ -821,18 +867,41 @@ class CTGANTrainer:
         return model.sample(num_samples)
 
 
-# Ejemplo de uso:
-# Definir el grid de hiperparámetros para CTGAN
-param_grid = {
-    'epochs': 200,
-    'batch_size': 500,
-    'discriminator_steps': 1,
-    'verbose': [False]
-}
-current_directory = os.path.dirname(__file__)  # Directorio actual del script Functions.py
-desired_model_directory = os.path.join(os.path.dirname(current_directory), 'Modelo CTGAN')
-model_path = os.path.join(desired_model_directory, 'ctgan_model.pkl')
+class CTGAN2:
+    def __init__(self, param_grid, model_path, pac=1):
+        self.param_grid = param_grid
+        self.model_path = model_path
+        self.pac = pac
+    def train(self):
+        # Cargar datos de entrenamiento y prueba
+        train_data = pd.read_excel(self.config.train_data_path)
+        test_data = pd.read_excel(self.config.test_data_path)
 
-# Suponiendo que 'df' es el dataframe completo proporcionado
-# Asumiendo que ya tienes df preprocesado y df_reduced sin la variable objetivo
-# target_column = 'Tumor type'  # Columna objetivo
+        # Combinar datos de entrenamiento y prueba
+        df_combined = pd.concat([train_data, test_data], axis=0)
+
+        # Seleccionar características importantes
+        X_real = df_combined[self.config.important_features]
+        y_real = df_combined[self.config.target_column]
+
+        # Identificar clases minoritarias
+        class_counts = y_real.value_counts()
+        minority_classes = class_counts[class_counts < class_counts.median()].index
+
+        # Separar datos de clases minoritarias
+        X_minority = X_real[y_real.isin(minority_classes)]
+        y_minority = y_real[y_real.isin(minority_classes)]
+
+        # Entrenar el modelo CTGAN solo con las clases minoritarias
+        ctgan_params = self.params['CTGAN']
+        model = CTGAN(**ctgan_params)
+        model.fit(X_minority)
+
+    def load_model(self):
+        # Cargar el modelo entrenado
+        return joblib.load(self.model_path)
+
+    def generate_sample(self, model, num_samples=1):
+        # Generar datos sintéticos
+        return model.sample(num_samples)
+

@@ -218,7 +218,7 @@ def GradientBoosting(df):
     return y_pred, prob
 
 
-def VotingClassifier(df):
+def VotingClassifier_1(df):
     model_name = 'voting_clf_e2_1.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
@@ -226,6 +226,27 @@ def VotingClassifier(df):
     model = fn.load_model(model_path)
 
     print(model)
+    if model is None:
+        return None, None
+
+    # Realizar predicción con el modelo cargado
+    try:
+        y_pred = model.predict(df)
+        prob = model.predict_proba(df)[:, 1] if hasattr(model, 'predict_proba') else None
+    except AttributeError as e:
+        print(f"Error al hacer predicción: {e}")
+        return None, None
+
+    return y_pred, prob
+
+
+def VotingClassifier_2(df):
+    model_name = 'voting_clf.joblib'
+    model_path = os.path.join(fn.get_path(), model_name)
+
+    # Cargar el modelo con joblib
+    model = fn.load_model(model_path)
+
     if model is None:
         return None, None
 
