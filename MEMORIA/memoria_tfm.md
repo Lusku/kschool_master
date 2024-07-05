@@ -277,7 +277,16 @@ Se llevaron a cabo varios análisis descriptivos y exploratorios para entender m
 
 ### Tabla 1: Niveles de proteína en sangre según tipo de tumor y resultado del test CancerSEEK ([Tabla 1](https://public.tableau.com/views/dforiginalTables_S1_to_S11tabla_1/TablaS62?:language=es-ES&:sid=&:display_count=n&:origin=viz_share_link))
 
-![Tabla 1](https://public.tableau.com/views/dforiginalTables_S1_to_S11tabla_1/TablaS62?:language=es-ES&:sid=&:display_count=n&:origin=viz_share_link)
+![Tabla 1](image.png)
+
+![Tabla 1](https://drive.google.com/drive/u/0/folders/19iyq5hyzdRIe6_Gf8HjPX98MkbjIqFT4)
+
+![Image description](https://github.com/Lusku/kschool_master/blob/f262f0b444cdc9dcc472ae98dd038615a3e8ef2d/MEMORIA/Tableau/TABLA1%20H6.png)
+
+
+![tabla ](https://drive.google.com/file/d/1TKFLxXQt3YBqoQTLEsTZTv5nRUwFAsOS/view?usp=drive_link)
+
+
 
 
 **Descripción y Resultados:**
