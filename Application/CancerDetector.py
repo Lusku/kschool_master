@@ -1,5 +1,8 @@
+import os
 from tkinter import messagebox
 from tkinter import ttk
+
+import joblib
 from PIL import Image, ImageTk
 import tkinter as tk
 import random
@@ -240,7 +243,9 @@ class MyApp:
         model_name = model_var.get()
         if model_name == const.Constantes.VOTING_CLASSIFIER_2:
             result, prob = md.VotingClassifier_2(df_prep)
-
+            fn.get_path()
+        label_encoder = joblib.load(os.path.join(fn.get_path(), 'Tumor type_label_encoder.joblib'))
+        result = label_encoder.inverse_transform(result)
         # Mostrar el resultado en una ventana emergente
         result_message = f"Predicción del tipo de cáncer: {result}"
         tk.messagebox.showinfo("Resultado", result_message)
