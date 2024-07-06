@@ -56,8 +56,7 @@ class MyApp:
             'Omega score': tk.StringVar(),
             'GDF15 (ng/ml)': tk.StringVar(),
             'CYFRA 21-1 (pg/ml)': tk.StringVar(),
-            'Myeloperoxidase (ng/ml)': tk.StringVar(),
-            'sEGFR (pg/ml)': tk.StringVar()
+            'Myeloperoxidase (ng/ml)': tk.StringVar()
         }
 
         self.ranges_cancer = {
@@ -69,8 +68,7 @@ class MyApp:
             'Omega score': '0-333',
             'GDF15 (ng/ml)': '0.04-24',
             'CYFRA 21-1 (pg/ml)': '1816-1475727',
-            'Myeloperoxidase (ng/ml)': '1-1001',
-            'sEGFR (pg/ml)': '198-8577'
+            'Myeloperoxidase (ng/ml)': '1-1001'
         }
 
         # Variables y sus valores predefinidos para la segunda pestaña
@@ -247,7 +245,7 @@ class MyApp:
         label_encoder = joblib.load(os.path.join(fn.get_path(), 'Tumor type_label_encoder.joblib'))
         result = label_encoder.inverse_transform(result)
         # Mostrar el resultado en una ventana emergente
-        result_message = f"Predicción del tipo de cáncer: {result}"
+        result_message = f"Predicción del tipo de cáncer: {result[0]}"
         tk.messagebox.showinfo("Resultado", result_message)
 
     def generate_random_values(self, variables, ranges, title):
@@ -256,7 +254,9 @@ class MyApp:
                 synthetic_sample = self.ctgan_model.sample(1).iloc[0]
                 for variable, var_value in variables.items():
                     if variable in synthetic_sample:
-                        var_value.set(round(synthetic_sample[variable], 2))
+                        min_val, max_val = map(float, ranges[variable].split('-'))
+                        var_value.set(fn.check_limitis(round(synthetic_sample[variable], 2), min_val, max_val))
+
             else:
                 for variable, var_value in variables.items():
                     min_val, max_val = map(float, ranges[variable].split('-'))
@@ -266,7 +266,8 @@ class MyApp:
                 synthetic_sample = self.ctgan_model_2.sample(1).iloc[0]
                 for variable, var_value in variables.items():
                     if variable in synthetic_sample:
-                        var_value.set(round(synthetic_sample[variable], 2))
+                        min_val, max_val = map(float, ranges[variable].split('-'))
+                        var_value.set(fn.check_limitis(round(synthetic_sample[variable], 2), min_val, max_val))
             else:
                 for variable, var_value in variables.items():
                     min_val, max_val = map(float, ranges[variable].split('-'))
