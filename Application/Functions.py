@@ -649,7 +649,7 @@ def process_data(split = True, process_data = True, df_sample = None):
     # TODO Una vez hechos los modelos, habrá que estudiar cómo influye el usar esta serie de variables en la predicción
     columnas_segundo_enfoque = ['Tumor type', 'OPN (pg/ml)', 'IL-6 (pg/ml)', 'IL-8 (pg/ml)', 'HGF (pg/ml)',
                                 'Prolactin (pg/ml)', 'Omega score', 'GDF15 (ng/ml)', 'CYFRA 21-1 (pg/ml)',
-                                'Myeloperoxidase (ng/ml)', 'sEGFR (pg/ml)']
+                                'Myeloperoxidase (ng/ml)']
     df_reduced_segundo_enfoque = df[columnas_segundo_enfoque].copy()
 
     ''' Valores para X
@@ -799,6 +799,15 @@ def load_model(model_path):
     except Exception as e:
         print(f"Error al cargar el modelo: {e}")
         return None
+
+def check_limitis(value,min,max):
+    if value < min:
+        return min
+    elif value > max:
+        return max
+    else:
+        return value
+
 class CTGANTrainer:
     def __init__(self, param_grid, model_path, pac=1):
         self.param_grid = param_grid
