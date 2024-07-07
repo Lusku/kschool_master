@@ -155,7 +155,7 @@ class MyApp:
         frame_inputs.pack()
 
         # Añadir las etiquetas de encabezado
-        header_labels = ["Variable", "Valor", "Rango común"]
+        header_labels = ["Variable", "Valor", "Mínimo - Máximo"]
         for j, text in enumerate(header_labels):
             label = ttk.Label(frame_inputs, text=text, font=("Arial", 10, "bold"))
             label.grid(row=0, column=j, padx=5, pady=5, sticky="w")
