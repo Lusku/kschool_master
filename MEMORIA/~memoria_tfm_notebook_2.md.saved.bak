@@ -1,0 +1,328 @@
+# Notebook 2
+
+## INICIO
+Este notebook despliega su función fundamental en el ámbito de la ciencia médica al desempeñarse como la herramienta principal para llevar a cabo la tarea crucial de la clasificación multicategoría del cáncer, es decir, la identificación meticulosa y precisa de diversos tipos específicos de cáncer que afectan a los pacientes, contribuyendo así significativamente al avance y la mejora de los métodos diagnósticos y terapéuticos en oncología.
+
+Empezamos cargando los datos seleccionando del archivo las tablas con la información más significativa para la tarea, es decir, las tablas S4 y S6. 
+
+
+## EDA
+Posteriormente, limpiamos estas tablas de datos nulos y las convertimos en dataframes, denominados df4 y df6, respectivamente. Este código de limpieza implementa un pipeline de análisis exploratorio de datos (EDA) utilizando las librerías pandas, seaborn y matplotlib. 
+
+Mediante ello, hemos conseguido realizar un EDA completo que incluye la carga y limpieza de datos, el análisis descriptivo, la visualización de distribuciones numéricas y categóricas, la visualización de correlaciones y la comparación de características por grupos.
+
+### Tabla S4
+
+|  | Patient ID # | Tumor type | AJCC Stage | Histopathology | Plasma volume (mL) | Plasma DNA concentration (ng/mL) | CancerSEEK Logistic Regression Score | CancerSEEK Test Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | CRC 455 | Colorectum | I | Adenocarcinoma | 5.0 | 6.08 | 0.938 | Positive |
+| 1 | CRC 456 | Colorectum | I | Adenocarcinoma | 4.0 | 46.01 | 0.925 | Positive |
+|... |... |... |... |... |... |... |... |... |
+| 1812 | PAPA 1353 | Ovary | I | Epithelial carcinoma | 3.5 | 6.55 | 0.980 | Positive |
+| 1813 | PAPA 1354 | Ovary | I | Epithelial carcinoma | 3.5 | 22.83 | 0.999 | Positive |
+| 1814 | PAPA 1355 | Ovary | III | Epithelial carcinoma | 3.5 | 64.51 | 1.000 | Positive |
+| 1815 | PAPA 1356 | Ovary | II | Epithelial carcinoma | 3.5 | 13.71 | 1.000 | Positive |
+| 1816 | PAPA 1357 | Ovary | III | Epithelial carcinoma | 3.5 | 19.81 | 1.000 | Positive |
+
+1817 rows × 8 columns
+
+*Fig. 1*
+
+##### Notas
+
+- Esta tabla muestra un extracto de las primeras y últimas filas de la tabla completa de 1817 filas y 10 columnas.
+ `*Para acceder a la tabla completa, consulte el archivo original.*`
+
+#### Análisis de la Tabla S6
+
+La tabla S4 muestra información detallada de 1817 pacientes con cáncer, organizados en 13 columnas. Las columnas incluyen identificadores del paciente y de las muestras de plasma y tumor, datos demográficos como edad, sexo y raza, y características clínicas como tipo y etapa del tumor, histopatología, volumen de plasma, concentración de ADN en plasma, y resultados del test CancerSEEK (puntaje y resultado). Esta tabla facilita el análisis y comparación de datos clínicos y de laboratorio en estudios oncológicos.
+
+
+#### Descripción Estadística de Tabla S4
+
+|                        | Age | Plasma volume (mL) | Plasma DNA concentration (ng/mL) | CancerSEEK Logistic Regression Score |
+|------------------------|-----|--------------------|---------------------------------|-------------------------------------|
+| **count**              | 1817| 1817               | 1817                             | 1817                                |
+| **mean**               | 56.81| 7.37                | 8.92                             | 0.55                                |
+| **std**                | 17.31| 0.62                | 15.18                            | 0.37                                |
+| **min**                | 17.00| 2.00                | 0.00                             | 0.06                                |
+| **25%**                | 47.41| 7.50                | 2.31                             | 0.20                                |
+| **50%**                | 60.00| 7.50                | 4.38                             | 0.46                                |
+| **75%**                | 69.43| 7.50                | 8.20                             | 0.99                                |
+| **max**                | 93.00| 7.50                | 157.48                           | 1.00                                |
+
+*Fig. 2*
+
+##### Notas
+- Los valores presentados son resúmenes estadísticos de algunas columnas seleccionadas de la tabla completa para simplificar la visualización.
+- **Plasma DNA concentration**: Concentración de ADN en plasma
+- **CancerSEEK Logistic Regression Score**: Puntaje de regresión logística de CancerSEEK
+
+ `*Para acceder a la tabla completa, consulte el archivo original.*`
+
+
+El análisis de la tabla S4 (Fig. 2) revela varias observaciones importantes:
+
+* **Balance de Datos**: Hay un desbalance significativo en algunas categorías (por ejemplo, Raza, Tipo de Tumor y Resultado del Test CancerSEEK).
+* **Distribuciones**: Algunas variables muestran distribuciones sesgadas (por ejemplo, la concentración de ADN en plasma), lo que puede requerir transformaciones para un análisis adecuado.
+* **Correlaciones**: Identificamos correlaciones moderadas entre algunas variables clave, lo que puede guiar el desarrollo de modelos predictivos.
+* **Análisis de Componentes Principales (PCA)**: Indica alta variabilidad y dispersión en los datos, lo que sugiere que múltiples factores contribuyen a las diferencias observadas.
+
+Estos datos permiten el análisis de marcadores biológicos en relación con el diagnóstico y el pronóstico del cáncer, ofreciendo una visión integral para estudios oncológicos detallados y personalizados.
+
+### Tabla S6
+
+
+| Index | Patient ID # | Tumor type | AJCC Stage | AFP (pg/ml) | CA-125 (U/ml) | CA 15-3 (U/ml) | CA19-9 (U/ml) | CEA (pg/ml) | CancerSEEK Test Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | CRC 455 | Colorectum | I | 1583.450 | 5.090 | 19.08 | 16.452 | 6832.07 | Positive |
+| 1 | CRC 456 | Colorectum | I | 715.308 | 7.270 | 10.04 | 40.910 | 5549.47 | Positive |
+| 2 | CRC 457 | Colorectum | II | 4365.530 | 4.854 | 16.96 | 16.452 | 3698.16 | Negative |
+| 3 | CRC 458 | Colorectum | II | 715.308 | 5.390 | 8.31 | 16.452 | 5856.00 | Negative |
+| 4 | CRC 459 | Colorectum | II | 801.300 | 4.854 | 11.73 | 16.452 | 5447.93 | Negative |
+| ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 1812 | PAPA 1353 | Ovary | I | 879.498 | 24.820 | 10.30 | 42.390 | 5390.31 | Positive |
+| 1813 | PAPA 1354 | Ovary | I | 1337.330 | 5.580 | 9.80 | 16.440 | 7951.03 | Positive |
+| 1814 | PAPA 1355 | Ovary | III | 879.498 | 30.480 | 8.48 | 16.440 | 2396.36 | Positive |
+| 1815 | PAPA 1356 | Ovary | II | 879.498 | 1469.450 | 23.74 | 62.260 | 3079.81 | Positive |
+| 1816 | PAPA 1357 | Ovary | III | 879.498 | 1428.310 | 836.85 | 37.900 | 3967.55 | Positive |
+
+1817 rows × 10 columns
+
+*Fig. 3*
+
+##### Notas
+
+- Esta tabla muestra un extracto de las primeras y últimas filas de la tabla completa de 1005 filas y 47 columnas.
+- **AFP**: Alfa-fetoproteína
+- **CA-125**: Antígeno del cáncer 125
+- **CEA**: Antígeno carcinoembrionario
+
+ `*Para acceder a la tabla completa, consulte el archivo original.*`
+
+
+#### Análisis de la Tabla S6
+
+La tabla S6 contiene datos detallados de 1005 pacientes con cáncer, distribuidos en 47 columnas. Incluye identificadores de pacientes y muestras, tipo y etapa del tumor, y niveles de varios biomarcadores (como AFP, CA-125, y TIMP-1) en plasma. También se presentan puntajes y resultados de la prueba CancerSEEK, el puntaje Omega, y datos demográficos como el sexo del paciente. Estos datos permiten el análisis de marcadores biológicos en relación con el diagnóstico y el pronóstico del cáncer.
+
+
+#### Descripción Estadística de Tabla S6
+
+|                        | AFP (pg/ml) | Angiopoietin-2 (pg/ml) | CA-125 (U/ml) | CEA (pg/ml) | Omega score |
+|------------------------|-------------|------------------------|---------------|-------------|-------------|
+| **count**              | 1817        | 1817                   | 1817          | 1817        | 1817        |
+| **mean**               | 7109.35     | 1908.42                | 25.18         | 4427.20     | 4.44        |
+| **std**                | 52353.92    | 1814.77                | 184.59        | 23696.80    | 20.77       |
+| **min**                | 706.16      | 38.39                  | 4.61          | 426.44      | 0.00        |
+| **25%**                | 829.98      | 997.49                 | 4.89          | 614.20      | 0.72        |
+| **50%**                | 946.94      | 1498.92                | 4.98          | 1045.44     | 0.98        |
+| **75%**                | 1848.54     | 2259.46                | 6.40          | 1924.61     | 1.47        |
+| **max**                | 600608.89   | 30001.79               | 3600.02       | 337245.43   | 333.23      |
+
+
+*Fig. 4*
+
+##### Notas
+- Los valores presentados son resúmenes estadísticos de algunas columnas seleccionadas de la tabla completa para simplificar la visualización.
+- **AFP**: Alfa-fetoproteína
+- **CEA**: Antígeno carcinoembrionario
+- **Omega score**: Puntaje Omega
+
+ `*Para acceder a la tabla completa, consulte el archivo original.*`
+
+
+El análisis exploratorio de los datos (EDA) de la tabla S6 (Fig. 4) revela varias observaciones importantes:
+
+* **Variabilidad entre Tipos de Tumores**: Muchos biomarcadores muestran variaciones significativas entre diferentes tipos de tumores, lo que puede ser útil para la clasificación y predicción del tipo de cáncer.
+* **Valores Atípicos**: Existen varios valores atípicos en los datos, indicando que algunos pacientes tienen niveles extremadamente altos o bajos de ciertos biomarcadores.
+* **Valores Faltantes**: La presencia de valores faltantes en algunos biomarcadores debe ser considerada y abordada mediante técnicas de imputación o exclusión de datos.
+* **Distribución de Edad**: La mayoría de los pacientes tienen edades que oscilan entre 40 y 70 años.
+* **Distribución de Sexo**: Hay más mujeres que hombres en el conjunto de datos.
+* **Distribución del Tipo de Tumor**: El tipo de tumor más común en el conjunto de datos es el colorrectal, seguido por otros tipos como el de pulmón y el de mama.
+* **Distribución del Volumen de Plasma**: La mayoría de los volúmenes de plasma están entre 4 y 7 mL.
+* **Distribución de la Concentración de ADN en Plasma**: La concentración de ADN en plasma varía ampliamente, pero la mayoría de las muestras tienen concentraciones bajas.
+
+El ADN libre en sangre, bajo condiciones normales, se encuentra en muy bajas concentraciones, asociado a los procesos de muerte celular, que ocurre normalmente en el recambio celular. Las concentraciones de ADN libre en sangre pueden verse alteradas por distintas circunstancias, como daño a tejidos, inflamación, embarazo, infecciones, cáncer y trauma. En pacientes enfermos con cáncer, la concentración de ADN libre disminuye en respuesta a quimioterapia y se incrementa cuando hay diseminación del tumor o metástasis.
+
+Existe gran divergencia entre valores de referencia de la concentración de ADN libre en voluntarios sanos. Para Wu y colaboradores, la concentración de ADN libre en individuos sanos es de 57,1 ± 30,6 ng/mL; otros estudios muestran concentraciones de 0 hasta 35,2 ug/mL; y para otros autores, los valores normales son de 10 a 30 ng/mL con una media de 13 ng/mL. Adicionalmente, la concentración de este ADN aumenta en pacientes con cáncer, excediendo los 100 ng/mL hasta aproximadamente 180 ng/mL. En pacientes con cáncer de pulmón se han reportado medias de 318 ng/mL.
+
+Es necesario establecer los valores normales de la cuantificación de ADN libre en diferentes regiones de la población colombiana para poder establecer comparaciones con pacientes que padezcan alguna de las patologías mencionadas. La divergencia en estos valores reportados podría resultar en errores al realizar comparaciones, obteniendo valores de cuantificación equívocos que puedan resultar en informes deficientes a la hora de determinar enfermedades mediante esta técnica.
+
+Este estudio tuvo como objetivo determinar la concentración de ADN libre en personas sanas en la población bogotana, para establecer un rango normal o de referencia mediante la técnica de PCR en Tiempo-Real sin realizar pasos de extracción y purificación de ADN.
+
+Antes de preprocesar la tabla S6, eliminamos el valor "Normal" (se refiere a ausencia de tumor) de la columna Tipo de Tumor y obtenemos las siguientes métricas:
+
+* **Omega score (0.70% de Valores Faltantes)**:
+    * Recomendación: Dado el pequeño porcentaje de valores faltantes, la imputación con la mediana es adecuada para mantener la robustez ante posibles valores atípicos.
+* **G-CSF (pg/ml) (0.10% de Valores Faltantes)**:
+    * Recomendación: La imputación con la mediana también es adecuada aquí debido al muy bajo porcentaje de valores faltantes.
+
+A continuación, vamos a preprocesar los datos correspondientes a la tabla S6, una vez que ya la hayamos separado del dataframe original, ahora también bajo el nombre df6.
+
+
+## PREPROCESAMIENTO DE DATOS
+
+### Pasos seguidos en la creación del dataframe a usar.
+
+Aquí estamos tratando la aplicación de las funciones creadas para preprocesar los datos del dataframe df6 sin los datos correspondientes al tipo de tumor "Normal" (sin indicios de la existencia de un tipo de tumor), dando lugar a la creación del dataframe que se usará a continuación bajo el nombre df_final, detallando dicho proceso a continuación:
+
+|  | AFP (pg/ml) | Angiopoietin-2 (pg/ml) | AXL (pg/ml) | CA-125 (U/ml) | CA 15-3 (U/ml) | CA19-9 (U/ml) | CD44 (ng/ml) | CEA (pg/ml) | CYFRA 21-1 (pg/ml) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | -0.162730 | -0.399967 | 0.161177 | -0.155628 | -0.208773 | -0.126586 | 0.100087 | -0.177265 | -0.118556 |
+| 1 | -0.161972 | -0.412345 | -0.862979 | -0.155856 | -0.139035 | -0.126858 | -0.260427 | -0.162648 | -0.117902 |
+| 2 | -0.155496 | -0.507819 | -0.284533 | -0.155194 | -0.255232 | 0.053126 | -0.630079 | -0.184200 | -0.115457 |
+| 3 | -0.150629 | -0.584907 | -0.928337 | -0.155787 | -0.230770 | -0.106049 | 0.047755 | -0.181969 | -0.011969 |
+| 4 | -0.147157 | -0.464835 | 1.144186 | -0.131803 | 0.317763 | -0.085735 | 2.054673 | -0.192859 | -0.119066 |
+
+*Fig. 5*
+
+##### Notas
+- Los valores presentados son resúmenes estadísticos de algunas columnas seleccionadas de la tabla completa para simplificar la visualización.
+- Las columnas DKK1 (ng/ml), sHER2/sEGFR2/sErbB2 (pg/ml), sPECAM-1 (pg/ml), TGFa (pg/ml), Thrombospondin-2 (pg/ml), TIMP-1 (pg/ml), TIMP-2 (pg/ml), Omega score, AJCC Stage, Sex_Male y Tumor type no están presentes en esta versión de la tabla, para una mejor visualización en el documento escrito.
+
+ `*Para acceder a la tabla completa, consulte el archivo original.*`
+
+
+1. **Eliminar Columnas No Deseadas**: Se eliminaron las siguientes columnas:
+    * ID del Paciente
+    * ID de la Muestra
+    * Resultado del Test CancerSEEK
+    * Puntuación de Regresión Logística de CancerSEEK
+
+2. **Identificación de Características**:
+    * **Características Numéricas**: Identificación de las columnas numéricas restantes después de la eliminación.
+    * **Características Categóricas**: Identificación de las columnas categóricas restantes.
+
+3. **Preprocesamiento de las Características Numéricas**:
+    * **Imputación con la Mediana**: Para manejar valores nulos en características numéricas.
+    * **Estandarización**: Para escalar las características numéricas a una distribución estándar.
+
+4. **Preprocesamiento de las Características Categóricas**:
+    * **Codificación Ordinal para AJCC Stage**: Dado que tiene un orden intrínseco.
+    * **Codificación Binaria para Sexo**: Dado que es una variable con dos categorías (Hombre y Mujer).
+
+5. **Combinación de los Transformadores**: Se combinó todo el preprocesamiento en un solo ColumnTransformer para aplicar las transformaciones adecuadas a cada tipo de característica.
+
+6. **Separación de Características y Variable Objetivo**:
+    * **Características (X)**: Se eliminaron las columnas seleccionadas para quedarse con las características.
+    * **Variable Objetivo (y)**: Tipo de Tumor.
+
+7. **División en Conjuntos de Entrenamiento y Prueba**:
+    * **Entrenamiento (70%) y Prueba (30%)**: Los datos se dividieron aleatoriamente en conjuntos de entrenamiento y prueba usando una semilla aleatoria (random_state=42) para reproducibilidad.
+
+8. **Ajuste y Transformación de los Datos**:
+    * Se ajustaron los datos de entrenamiento con el preprocesador configurado.
+    * Se transformaron los datos de entrenamiento y prueba aplicando las mismas transformaciones.
+
+Hemos transformado la variable objetivo a formato numérico por las siguientes razones:
+* **Compatibilidad**: Asegura que la variable objetivo sea compatible con una amplia gama de algoritmos de machine learning.
+* **Eficiencia**: Los algoritmos de aprendizaje suelen funcionar más eficientemente con variables numéricas.
+* **Precisión**: Evita posibles errores de procesamiento que pueden ocurrir con variables categóricas en formato string.
+
+![labelencoder 1](labelencoder%201.png)
+
+
+Uno de los resultados del preprocesamiento (Fig. 5), es que hemos transformado la variable objetivo (Tumor type) a formato numérico por las siguientes razones:
+* Compatibilidad: Asegura que la variable objetivo sea compatible con una amplia gama de algoritmos de machine learning.
+* Eficiencia: Los algoritmos de aprendizaje suelen funcionar más eficientemente con variables numéricas.
+* Precisión: Evita posibles errores de procesamiento que pueden ocurrir con variables categóricas en formato string.
+
+A continuación, pasamos a contar cuantos datos tenemos disponibles para cada tipo de tumor. 
+
+| Tumor type | Count |
+| --- | --- |
+| Colorectum | 388 |
+| Breast | 209 |
+| Lung | 104 |
+| Pancreas | 93 |
+| Stomach | 68 |
+| Ovary | 54 |
+| Esophagus | 45 |
+| Liver | 44 |
+
+*Fig. 6*
+
+La distribución (Fig. 6) muestra un claro desbalance, donde ciertas categorías (Colorectum, Breast) tienen muchos más ejemplos que otras (Esophagus, Liver). Este desbalance puede afectar el rendimiento de los modelos de machine learning, especialmente en términos de sesgo hacia las clases más frecuentes.
+
+### DESBALANCEO Y EVALUACIÓN DE MODELOS
+
+En esta parte del proyecto, se evalúa y compara el rendimiento de varios algoritmos de machine learning en la tarea de clasificación. El objetivo es identificar el algoritmo que mejor se adapte a las características del conjunto de datos y logre la mayor precisión en la clasificación.
+
+Se utilizan bibliotecas como scikit-learn e imblearn para importar algoritmos de clasificación y técnicas de oversampling y undersampling. Se definen funciones para evaluar el rendimiento de los modelos, calcular una puntuación global y entrenar y evaluar los modelos.
+
+Se seleccionaron los siguientes algoritmos de clasificación para evaluar su rendimiento:
+
+* LogisticRegression: un algoritmo de regresión logística que se utiliza comúnmente para problemas de clasificación binaria.
+* DecisionTreeClassifier: un algoritmo de árbol de decisión que se utiliza para problemas de clasificación multiclase.
+* RandomForestClassifier: un algoritmo de bosque aleatorio que se utiliza para problemas de clasificación multiclase.
+* AdaBoostClassifier: un algoritmo de boosting que se utiliza para problemas de clasificación multiclase.
+* GradientBoostingClassifier: un algoritmo de boosting que se utiliza para problemas de clasificación multiclase.
+* KNeighborsClassifier: un algoritmo de vecinos más cercanos que se utiliza para problemas de clasificación multiclase.
+
+
+Para manejar conjuntos de datos desequilibrados, se utilizaron las siguientes técnicas de oversampling y undersampling:
+
+* CTGANS: una técnica de oversampling que utiliza generadores de tablas condicionales para generar muestras sintéticas.
+* RandomUnderSampler: una técnica de undersampling que selecciona aleatoriamente muestras de la clase minoritaria.
+* CondensedNearestNeighbour: una técnica de undersampling que selecciona las muestras más cercanas a la frontera de decisión.
+* NearMiss: una técnica de undersampling que selecciona las muestras más cercanas a la frontera de decisión.
+
+Para evaluar el rendimiento de los modelos, se definieron funciones para calcular la precisión, recall, F1-score y matriz de confusión. Se utilizó cross-validation para evaluar la precisión de los modelos y se calculó una puntuación global para cada modelo, ponderando la precisión, recall, F1-score y accuracy. Los resultados se almacenaron en un DataFrame llamado *tabla_results_df* para facilitar la comparación entre los modelos.
+
+Seguidamente, nos ocupamos de la evaluación y comparación del rendimiento de varios algoritmos de machine learning para la tarea de clasificación, utilizando diferentes estrategias de balanceo para manejar conjuntos de datos desequilibrados.
+
+![](model_evaluation%20(2).png)
+
+*Fig. 7*
+
+Inicializamos un DataFrame para almacenar los resultados, que incluirán la precisión, recall, F1-score y puntuación global para cada modelo y estrategia de balanceo.
+
+Se definen los modelos de clasificación y estrategias de balanceo a utilizar:
+
+* Modelos: Logistic Regression, Decision Tree, Random Forest, KNN, AdaBoost y Gradient Boosting.
+* Estrategias de balanceo: RandomUnderSampler, NearMiss, CondensedNearestNeighbour, CTGANS y una combinación de CTGANS y RandomUnderSampler.
+
+Se separan las características y la variable objetivo del conjunto de datos, y se dividen los datos en conjuntos de entrenamiento y prueba.
+
+Luego, se entrenan y evalúan los modelos para cada estrategia de balanceo, utilizando la función *entrenar_y_evaluar_modelo* para calcular la precisión, recall, F1-score y puntuación global para cada modelo. Los resultados se almacenan en el DataFrame de resultados.
+
+Finalmente, se guardan los resultados en un archivo Excel llamado *model_results* para facilitar la comparación y análisis de los resultados.
+
+Anteriormente nombramos las estrategias de balanceo usadas, y por ello vamos a comentar acerca de sus detalles:
+
+1. Random UnderSampler
+- Propósito: Esta técnica reduce el número de ejemplos en la clase mayoritaria para igualar el número de ejemplos en la clase minoritaria.
+- Ventaja: Es sencillo y rápido, y puede ser efectivo cuando se dispone de un gran número de datos.
+- Desventaja: Puede eliminar ejemplos importantes de la clase mayoritaria, lo que podría resultar en la pérdida de información valiosa.
+2. NearMiss
+- Propósito: NearMiss es una técnica de submuestreo que selecciona ejemplos de la clase mayoritaria basados en su proximidad a la clase minoritaria.
+- Ventaja: Mantiene ejemplos representativos de la clase mayoritaria cerca de la frontera de decisión, lo que puede ayudar en la clasificación.
+- Desventaja: Como el Random UnderSampler, puede eliminar ejemplos importantes, y puede ser computacionalmente costoso.
+3. Condensed Nearest Neighbour (CNN)
+- Propósito: CNN elimina ejemplos redundantes de la clase mayoritaria y conserva un subconjunto que representa bien la frontera de decisión.
+- Ventaja: Reduce el tamaño del conjunto de datos sin perder ejemplos críticos para la clasificación.
+- Desventaja: Puede ser computacionalmente costoso y no siempre funciona bien con datos de alta dimensionalidad.
+4. SMOTE (Synthetic Minority Over-sampling Technique)
+- Propósito: SMOTE genera ejemplos sintéticos de la clase minoritaria al interpolar entre ejemplos existentes.
+- Ventaja: Aumenta el número de ejemplos de la clase minoritaria sin duplicar ejemplos existentes, lo que puede mejorar la capacidad del modelo para aprender características de la clase minoritaria.
+- Desventaja: Puede introducir ruido si no se aplica cuidadosamente, y los ejemplos sintéticos pueden no representar bien la distribución real de la clase minoritaria.
+5. SMOTEENN
+- Propósito: Combina SMOTE con Edited Nearest Neighbours (ENN), primero generando ejemplos sintéticos y luego eliminando ejemplos problemáticos tanto de la clase mayoritaria como de la minoritaria.
+- Ventaja: Mejora la calidad del conjunto de datos al combinar las ventajas de sobremuestreo y limpieza de datos.
+- Desventaja: Es más complejo y computacionalmente costoso que aplicar SMOTE o ENN por separado.
+6. SMOTE + RandomUnderSampler
+- Propósito: Aplica SMOTE para generar ejemplos sintéticos de la clase minoritaria y luego utiliza Random UnderSampler para reducir el número de ejemplos en la clase mayoritaria.
+- Ventaja: Combina las ventajas de sobremuestreo y submuestreo, proporcionando un equilibrio entre aumentar la clase minoritaria y reducir la clase mayoritaria.
+- Desventaja: Puede ser computacionalmente costoso y requiere un ajuste cuidadoso para evitar la eliminación de ejemplos importantes.
+
+
+
+
+
+
+
+
+
+Referencia: 
+- [Revista Nova](https://revistas.unicolmayor.edu.co/index.php/nova/article/view/139/279)
+
