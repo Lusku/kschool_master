@@ -239,9 +239,8 @@ class MyApp:
 
         # Seleccionar el modelo basado en la opción del combobox
         model_name = model_var.get()
-        if model_name == const.Constantes.VOTING_CLASSIFIER_2:
-            result, prob = md.VotingClassifier_2(df_prep)
-            fn.get_path()
+        result, prob = md.VotingClassifier_2(df_prep)
+        fn.get_path()
         label_encoder = joblib.load(os.path.join(fn.get_path(), 'Tumor type_label_encoder.joblib'))
         result = label_encoder.inverse_transform(result)
         # Mostrar el resultado en una ventana emergente

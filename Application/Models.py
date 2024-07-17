@@ -39,7 +39,7 @@ def RegressionLineal(df):
         - y_pred (np.ndarray): The predicted values.
         - prob (np.ndarray or None): The predicted probabilities if the model supports it, otherwise None.
     """
-    model_name = 'regresionLineal_e2_1.joblib'
+    model_name = 'regresionLineal_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Load the model with joblib
@@ -78,7 +78,7 @@ def RegressionLogistica(df):
         - y_pred (np.ndarray): The predicted values.
         - prob (np.ndarray or None): The predicted probabilities if the model supports it, otherwise None.
     """
-    model_name = 'regresionLogistica_e2_1.joblib'
+    model_name = 'regresionLogistica_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Cargar el modelo con joblib
@@ -111,7 +111,7 @@ def RandomForest(df):
         - y_pred (np.ndarray): The predicted values.
         - prob (np.ndarray or None): The predicted probabilities if the model supports it, otherwise None.
     """
-    model_name = 'randomForest_e2_1.joblib'
+    model_name = 'randomForest_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Load the model with joblib
@@ -144,7 +144,7 @@ def KNN(df):
         - y_pred (np.ndarray): The predicted values.
         - prob (np.ndarray or None): The predicted probabilities if the model supports it, otherwise None.
     """
-    model_name = 'knn_e2_1.joblib'
+    model_name = 'knn_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Load the model with joblib
@@ -176,7 +176,7 @@ def AdaBoost(df):
         - y_pred (np.ndarray): The predicted values.
         - prob (np.ndarray or None): The predicted probabilities if the model supports it, otherwise None.
     """
-    model_name = 'adaBoost_e2_1.joblib'
+    model_name = 'adaBoost_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Load the first AdaBoost model with joblib
@@ -197,7 +197,7 @@ def AdaBoost(df):
     return y_pred, prob
 
 def GradientBoosting(df):
-    model_name = 'gradientBoosting_e2_1.joblib'
+    model_name = 'gradientBoosting_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Cargar el modelo con joblib
@@ -219,7 +219,7 @@ def GradientBoosting(df):
 
 
 def VotingClassifier_1(df):
-    model_name = 'voting_clf_e2_1.joblib'
+    model_name = 'voting_clf_e2_2.joblib'
     model_path = os.path.join(fn.get_path(), model_name)
 
     # Cargar el modelo con joblib

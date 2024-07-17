@@ -694,7 +694,6 @@ def process_data(split = True, process_data = True, df_sample = None):
             if df_sample is not None and not df.empty:
                 df_sample_prep = preprocessor.transform(df_sample)
                 return df_sample_prep
-            X_prep = np.vstack((X_train_prep, X_val_prep, X_test_prep))
 
             return X_train_prep, X_val_prep, X_test_prep, y_train, y_val, y_test
         else :
