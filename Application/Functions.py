@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier,
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from feature_engine.discretisation import DecisionTreeDiscretiser
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.feature_selection import mutual_info_classif
@@ -669,18 +670,28 @@ def process_data(split = True, process_data = True, df_sample = None):
             numeric_cols = X_train.select_dtypes(include=['float64', 'int']).columns.to_list()
             cat_cols = X_train.select_dtypes(include=['object', 'category']).columns.to_list()
 
+            # Crear el discretizado
+            numeric_pipeline = Pipeline(steps=[
+                ('scale', StandardScaler()),
+                ('discretize',
+                 DecisionTreeDiscretiser(cv=5, scoring='accuracy', variables=numeric_cols, regression=False))
+            ])
+
+            # Crear el preprocesador
             preprocessor = ColumnTransformer(
-                [('scale', StandardScaler(), numeric_cols),
-                 ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_cols)],
+                transformers=[
+                    ('num', numeric_pipeline, numeric_cols),
+                    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_cols)
+                ],
                 remainder='passthrough',
                 verbose_feature_names_out=False
             ).set_output(transform="pandas")
 
-            # TODO DUDA - Añadir un proceso de discretización? Puede mejorar el resultado. Ver cómo influye usar la función 'discretizar_df_arboles' ó la función sklearn.preprocessing.KBinsDiscretizer
-            X_train_prep = preprocessor.fit_transform(X_train)
+            X_train_prep = preprocessor.fit_transform(X_train,y_train)
             X_val_prep = preprocessor.transform(X_val)
             X_test_prep = preprocessor.transform(X_test)
-            if df_sample is not None and not df.empty :
+
+            if df_sample is not None and not df.empty:
                 df_sample_prep = preprocessor.transform(df_sample)
                 return df_sample_prep
             X_prep = np.vstack((X_train_prep, X_val_prep, X_test_prep))
