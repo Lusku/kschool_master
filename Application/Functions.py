@@ -573,6 +573,26 @@ def encontrar_numero_optimo_clusters(X_train, X_val, model, max_clusters=10, plo
     numero_optimo_clusters = range(2, max_clusters + 1)[np.argmax(global_scores)]
     return numero_optimo_clusters
 
+def process_data_1(df):
+    model_name = 'preprocessor_2.joblib'
+    model_path = os.path.join(functions.get_path(), model_name)
+    print(f"Model Path: {model_path}")  # Imprime la ruta del modelo para verificar
+
+    try:
+        preprocessor = functions.load_model(
+            'C:/Users/danie/OneDrive/Documentos/Master/Lusku/TFM/Repositorio compartido/kschool_master/Modelos supervisados entrenados/preprocessor_2.joblib')
+        if preprocessor is None:
+            raise ValueError(
+                "El preprocesador no se pudo cargar correctamente. Verifica la ruta y el archivo del modelo.")
+        return preprocessor.transform(df)
+    except ImportError as e:
+        print(f"Error al importar un módulo necesario para cargar el modelo: {e}")
+        raise
+    except Exception as e:
+        print(f"Error al cargar o aplicar el preprocesador: {e}")
+        raise
+
+
 def process_data(split = True, process_data = True, df_sample = None):
     # Carga de la URL de donde se encuentran los datos
     # (I) Introducir valor de nombreArchivo y variar la ruta en local donde se guardan los datos
@@ -674,7 +694,7 @@ def process_data(split = True, process_data = True, df_sample = None):
             numeric_pipeline = Pipeline(steps=[
                 ('scale', StandardScaler()),
                 ('discretize',
-                 DecisionTreeDiscretiser(cv=5, scoring='accuracy', variables=numeric_cols, regression=False))
+                 DecisionTreeDiscretiser(cv=10, scoring='accuracy', variables=numeric_cols, regression=False))
             ])
 
             # Crear el preprocesador

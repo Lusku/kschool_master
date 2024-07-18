@@ -201,8 +201,8 @@ class MyApp:
         # Obtener los valores de las variables
         data = {variable: [float(var_value.get())] for variable, var_value in variables.items()}
         df = pd.DataFrame(data)
-        df_prep = fn.process_data(split = True, process_data = True, df_sample = df)
-
+        # df_prep = fn.process_data(split = True, process_data = True, df_sample = df)
+        df_prep = fn.process_data_1(df)
         # Seleccionar el modelo basado en la opción del combobox
         model_name = model_var.get()
         if model_name == const.Constantes.REGRESION_LINEAL:
@@ -240,7 +240,9 @@ class MyApp:
         # Seleccionar el modelo basado en la opción del combobox
         model_name = model_var.get()
         result, prob = md.VotingClassifier_2(df_prep)
-        fn.get_path()
+        if model_name == const.Constantes.VOTING_CLASSIFIER_2:
+            result, prob = md.VotingClassifier_2(df_prep)
+            fn.get_path()
         label_encoder = joblib.load(os.path.join(fn.get_path(), 'Tumor type_label_encoder.joblib'))
         result = label_encoder.inverse_transform(result)
         # Mostrar el resultado en una ventana emergente
