@@ -4,15 +4,15 @@
 
 ## **Abstract**
 
-La detección temprana del cáncer mejora significativamente las posibilidades de tratamiento exitoso y supervivencia. Este proyecto tiene como objetivo replicar y mejorar los hallazgos del estudio "Early Cancer Detection from Multianalyte Blood Test Results", utilizando análisis de sangre multianalito para predecir la presencia y el tipo de cáncer. El estudio utiliza varios modelos de aprendizaje automático para analizar marcadores sanguíneos y mejorar la precisión en la detección y clasificación del cáncer.
+La detección temprana del cáncer incrementa significativamente las probabilidades de un tratamiento exitoso y la supervivencia del paciente. Este proyecto tiene como finalidad replicar y mejorar los hallazgos del estudio "Early Cancer Detection from Multianalyte Blood Test Results", utilizando análisis de sangre multianalito para predecir tanto la presencia como el tipo de cáncer. El estudio emplea diversos modelos de aprendizaje automático para analizar marcadores sanguíneos y aumentar la precisión en la detección y clasificación del cáncer.
 
-Los objetivos principales de este proyecto son dos. Primero, buscamos replicar los modelos utilizados en el estudio original para predecir si un paciente tiene cáncer basándonos en los resultados de análisis de sangre. Segundo, buscamos extender estos modelos no solo para detectar la presencia de cáncer, sino también para clasificar el tipo específico entre ocho categorías predefinidas. Nuestro enfoque incluye desarrollar y validar nuevos modelos para mejorar el rendimiento predictivo más allá de los resultados del estudio original.
+El proyecto persigue dos objetivos principales. En primer lugar, buscamos replicar los modelos del estudio original para predecir la presencia de cáncer en pacientes basándonos en los resultados de análisis de sangre. En segundo lugar, pretendemos extender estos modelos para no solo detectar la presencia de cáncer, sino también para clasificar el tipo específico de cáncer entre ocho categorías predefinidas. Nuestro enfoque incluye el desarrollo y validación de nuevos modelos con el fin de mejorar el rendimiento predictivo más allá de los resultados iniciales.
 
-El proyecto utiliza datos de dos conjuntos de datos clave: uno para la detección binaria del cáncer (cáncer vs. no cáncer) y otro para la clasificación multicategoría del cáncer (identificación de tipos específicos de cáncer). Empleamos una gama de algoritmos de aprendizaje supervisado, incluyendo variantes de Naive Bayes, árboles de decisión y modelos de aprendizaje profundo. Se presta especial atención al modelo CancerA1DE, que ha mostrado un gran potencial en la detección de cáncer en etapas tempranas.
+Para alcanzar estos objetivos, utilizamos datos de dos conjuntos clave: uno destinado a la detección binaria del cáncer (cáncer vs. no cáncer) y otro enfocado en la clasificación multicategoría del cáncer (identificación de tipos específicos de cáncer). Empleamos una amplia gama de algoritmos de aprendizaje supervisado, incluyendo variantes de Naive Bayes, árboles de decisión y modelos de aprendizaje profundo. Prestamos especial atención al modelo CancerA1DE, que ha mostrado un gran potencial en la detección de cáncer en etapas tempranas.
 
-Nuestros hallazgos indican que es posible mejorar los modelos existentes, logrando una mayor sensibilidad y especificidad en la detección temprana del cáncer. El modelo CancerA1DE, en particular, demostró una duplicación de la sensibilidad para la detección de cáncer en etapa I con un nivel de especificidad del 99%. Además, nuestros modelos extendidos para la clasificación del tipo de cáncer mostraron un rendimiento robusto en múltiples tipos de cáncer.
+Nuestros hallazgos indican que es posible mejorar los modelos existentes, logrando una mayor sensibilidad y especificidad en la detección temprana del cáncer. El modelo CancerA1DE, en particular, demostró una duplicación de la sensibilidad para la detección de cáncer en etapa I, manteniendo un nivel de especificidad del 99%. Además, nuestros modelos extendidos para la clasificación del tipo de cáncer mostraron un rendimiento robusto en múltiples tipos de cáncer.
 
-Este proyecto contribuye al campo de la detección temprana del cáncer proporcionando una evaluación exhaustiva de modelos existentes y nuevos, junto con conocimientos prácticos sobre su aplicación. Los resultados tienen importantes implicaciones para el desarrollo de herramientas de detección de cáncer no invasivas y rentables que pueden ser implementadas en entornos clínicos.
+Este proyecto aporta significativamente al campo de la detección temprana del cáncer, proporcionando una evaluación exhaustiva de modelos existentes y nuevos, junto con conocimientos prácticos sobre su aplicación. Los resultados tienen importantes implicaciones para el desarrollo de herramientas de detección de cáncer no invasivas y rentables que puedan ser implementadas en entornos clínicos.
 
 Para obtener detalles sobre metodologías, conjuntos de datos e implementaciones de código, consulte el repositorio de GitHub proporcionado. Este proyecto subraya el potencial de combinar el aprendizaje automático con datos biomédicos para avanzar en el diagnóstico del cáncer y mejorar los resultados de los pacientes.
 
@@ -22,23 +22,104 @@ Para obtener detalles sobre metodologías, conjuntos de datos e implementaciones
 
 ## **Índice**
 
-[TOC]
+<!-- Start Document Outline -->
+
+* [Introducción](#introducción)
+	* [Contexto y Motivación](#contexto-y-motivación)
+	* [Estado del Arte](#estado-del-arte)
+	* [Casos de Uso y Retos Similares](#casos-de-uso-y-retos-similares)
+		* [Retos Similares](#retos-similares)
+	* [Motivación para el Proyecto](#motivación-para-el-proyecto)
+	* [Contribuciones Esperadas](#contribuciones-esperadas)
+* [Objetivos del Proyecto](#objetivos-del-proyecto)
+	* [Objetivos Empresariales](#objetivos-empresariales)
+	* [Objetivos Analíticos](#objetivos-analíticos)
+	* [Criterios de Éxito](#criterios-de-éxito)
+* [Datos](#datos)
+	* [Ubicación de las Fuentes de Datos](#ubicación-de-las-fuentes-de-datos)
+	* [Descripción Detallada del Conjunto de Datos Original](#descripción-detallada-del-conjunto-de-datos-original)
+	* [Análisis Descriptivo y Exploratorio de los Datos](#análisis-descriptivo-y-exploratorio-de-los-datos)
+	* [Análisis profundo de los datos](#análisis-profundo-de-los-datos)
+		* [Visualización de la Distribución de las Variables Numéricas](#visualización-de-la-distribución-de-las-variables-numéricas)
+		* [Análisis de Asimetría y Curtosis](#análisis-de-asimetría-y-curtosis)
+		* [Pruebas de Normalidad](#pruebas-de-normalidad)
+	* [Limpieza de los datos](#limpieza-de-los-datos)
+		* [Análisis de Valores Nulos](#análisis-de-valores-nulos)
+		* [Limpieza de los Datos](#limpieza-de-los-datos)
+	* [Binarización de la Variable Objetivo y Verificación del "Information Gain" de Cada Variable Frente a la Variable Objetivo](#binarización-de-la-variable-objetivo-y-verificación-del-information-gain-de-cada-variable-frente-a-la-variable-objetivo)
+		* [Binarización de la Variable Objetivo](#binarización-de-la-variable-objetivo)
+		* [Verificación del "Information Gain" de Cada Variable Frente a la Variable Objetivo](#verificación-del-information-gain-de-cada-variable-frente-a-la-variable-objetivo)
+		* [Comparación de los Resultados](#comparación-de-los-resultados)
+		* [Motivos para la Elección de los Dos Enfoques](#motivos-para-la-elección-de-los-dos-enfoques)
+	* [Conclusiones Integradas](#conclusiones-integradas)
+* [Tecnología](#tecnología)
+	* [Arquitectura de Referencia](#arquitectura-de-referencia)
+		* [1. Adquisición y Preprocesamiento de Datos](#1-adquisición-y-preprocesamiento-de-datos)
+		* [2. Análisis Exploratorio de Datos (EDA)](#2-análisis-exploratorio-de-datos-eda)
+		* [3. Modelización y Evaluación](#3-modelización-y-evaluación)
+		* [4. Infraestructura y Entorno de Desarrollo](#4-infraestructura-y-entorno-de-desarrollo)
+	* [Conclusión](#conclusión)
+* [Modelización](#modelización)
+	* [Modelos de Aprendizaje No Supervisado](#modelos-de-aprendizaje-no-supervisado)
+	* [1. KMeans](#1-kmeans)
+	* [2. Mean Shift](#2-mean-shift)
+	* [3. DBSCAN](#3-dbscan)
+	* [4. Gaussian Mixture Model (GMM)](#4-gaussian-mixture-model-gmm)
+	* [5. Análisis de Componentes Principales (PCA)](#5-análisis-de-componentes-principales-pca)
+	* [6. Análisis de Componentes Independientes (ICA)](#6-análisis-de-componentes-independientes-ica)
+	* [7. Análisis Discriminante Lineal (LDA)](#7-análisis-discriminante-lineal-lda)
+	* [8. Clustering Jerárquico](#8-clustering-jerárquico)
+	* [9. Algoritmo AnDE (Adaptive Nearest Neighbors Density Estimation)](#9-algoritmo-ande-adaptive-nearest-neighbors-density-estimation)
+	* [10. Detección de Anomalías (Isolation Forest)](#10-detección-de-anomalías-isolation-forest)
+	* [11. Reducción de Dimensionalidad mediante SVD (Singular Value Decomposition)](#11-reducción-de-dimensionalidad-mediante-svd-singular-value-decomposition)
+	* [Conclusiones](#conclusiones)
+* [Resultados](#resultados)
+	* [Evaluación de los Modelos Supervisados](#evaluación-de-los-modelos-supervisados)
+		* [Conclusión de los Modelos Supervisados](#conclusión-de-los-modelos-supervisados)
+	* [Evaluación de los Modelos No Supervisados](#evaluación-de-los-modelos-no-supervisados)
+		* [Conclusión de los Modelos No Supervisados](#conclusión-de-los-modelos-no-supervisados)
+	* [Relación con los Biomarcadores de Detección del Cáncer](#relación-con-los-biomarcadores-de-detección-del-cáncer)
+* [Despliegue Tecnológico](#despliegue-tecnológico)
+		* [Plan de Despliegue](#plan-de-despliegue)
+		* [Fases del Despliegue](#fases-del-despliegue)
+		* [Capacitación del Personal](#capacitación-del-personal)
+		* [Riesgos y Mitigaciones](#riesgos-y-mitigaciones)
+		* [Evaluación y Presentación de Resultados](#evaluación-y-presentación-de-resultados)
+		* [Conclusión](#conclusión)
+* [Puesta en Valor](#puesta-en-valor)
+		* [Plan de Despliegue Operativo](#plan-de-despliegue-operativo)
+		* [Objetivo](#objetivo)
+		* [Plan de Despliegue](#plan-de-despliegue)
+		* [Ventajas](#ventajas)
+		* [Riesgos y Mitigaciones](#riesgos-y-mitigaciones)
+		* [Aplicación Complementaria](#aplicación-complementaria)
+		* [Conclusión](#conclusión)
+* [Conclusiones](#conclusiones)
+	* [Resumen de Objetivos Alcanzados](#resumen-de-objetivos-alcanzados)
+	* [Análisis Crítico](#análisis-crítico)
+		* [Calidad y Cantidad de Datos](#calidad-y-cantidad-de-datos)
+		* [Modelos y Resultados](#modelos-y-resultados)
+	* [Conclusiones Generales](#conclusiones-generales)
+	* [Próximos Pasos](#próximos-pasos)
+* [Bibliografía y recursos](#bibliografía-y-recursos)
+
+<!-- End Document Outline -->
 
 ## **Introducción**
 
 ### Contexto y Motivación
 
-La detección temprana del cáncer es crucial para aumentar las tasas de supervivencia y mejorar los resultados del tratamiento. Tradicionalmente, las pruebas de detección del cáncer se han basado en métodos como imágenes y biopsias invasivas, que pueden ser costosos y poco accesibles para toda la población. La tecnología de biopsia líquida ha emergido como una alternativa prometedora, utilizando análisis de sangre para detectar fragmentos de ADN tumoral circulante (cfDNA) y otros biomarcadores, lo que permite una detección menos invasiva y potencialmente más temprana del cáncer [(DNA Science)](https://dnascience.plos.org/2024/01/11/multi-cancer-early-detection-blood-tests-mced-debut/) [(AACR Journals)](https://aacrjournals.org/cebp/article/31/3/512/681929/Multi-Cancer-Early-Detection-Tests-Current).
+La detección temprana del cáncer es fundamental para aumentar las tasas de supervivencia y mejorar los resultados del tratamiento. Tradicionalmente, las pruebas de detección del cáncer se han basado en métodos como imágenes y biopsias invasivas, los cuales pueden ser costosos y poco accesibles para toda la población. Sin embargo, la tecnología de biopsia líquida ha emergido como una alternativa prometedora, utilizando análisis de sangre para detectar fragmentos de ADN tumoral circulante (cfDNA) y otros biomarcadores. Esto permite una detección menos invasiva y potencialmente más temprana del cáncer [(DNA Science)](https://dnascience.plos.org/2024/01/11/multi-cancer-early-detection-blood-tests-mced-debut/) [(AACR Journals)](https://aacrjournals.org/cebp/article/31/3/512/681929/Multi-Cancer-Early-Detection-Tests-Current).
 
 ### Estado del Arte
 
-En los últimos años, ha habido avances significativos en la detección temprana del cáncer mediante análisis de sangre multianalito. Estos avances incluyen el desarrollo de pruebas de detección temprana de múltiples tipos de cáncer (MCED) que pueden identificar varios tipos de cáncer a partir de una sola muestra de sangre. Estas pruebas utilizan tecnologías avanzadas como la secuenciación de alto rendimiento y el aprendizaje automático para analizar patrones de metilación del ADN y niveles de proteínas específicas asociadas con diferentes tipos de cáncer [(SpringerLink)](https://link.springer.com/article/10.1007/s44272-024-00015-x).
+En los últimos años, se han logrado avances significativos en la detección temprana del cáncer mediante análisis de sangre multianalito. Estos progresos incluyen el desarrollo de pruebas de detección temprana de múltiples tipos de cáncer (MCED) que pueden identificar varios tipos de cáncer a partir de una sola muestra de sangre. Estas pruebas utilizan tecnologías avanzadas, como la secuenciación de alto rendimiento y el aprendizaje automático, para analizar patrones de metilación del ADN y niveles de proteínas específicas asociadas con diferentes tipos de cáncer. [(SpringerLink)](https://link.springer.com/article/10.1007/s44272-024-00015-x).
 
 Un ejemplo destacado de estas pruebas es la Galleri, desarrollada por GRAIL, que ha demostrado la capacidad de detectar más de 50 tipos de cáncer, incluyendo algunos que no son detectados por las pruebas de detección convencionales. Los estudios han mostrado que Galleri puede detectar cánceres en etapas tempranas con una mayor precisión, lo que es crucial para mejorar los resultados del tratamiento y reducir las tasas de mortalidad ([DNA Science](https://dnascience.plos.org/2024/01/11/multi-cancer-early-detection-blood-tests-mced-debut/)).
 
 ### Casos de Uso y Retos Similares
 
-El uso de MCEDs ha mostrado potencial para revolucionar la detección del cáncer, permitiendo diagnósticos más tempranos y precisos. Sin embargo, todavía existen varios retos que deben abordarse para su implementación generalizada. Estos incluyen la necesidad de una validación clínica más amplia, la estandarización de los procedimientos de prueba y la reducción de los costos asociados con estas tecnologías avanzadas. Además, existe el riesgo de sobrediagnóstico, donde se detectan cánceres que no habrían causado síntomas clínicos significativos, lo que puede llevar a tratamientos innecesarios y perjudiciales para los pacientes ([SpringerLink](https://link.springer.com/article/10.1007/s44272-024-00015-x)).
+El uso de pruebas de detección temprana de múltiples tipos de cáncer (MCEDs) ha mostrado un gran potencial para revolucionar la detección del cáncer, permitiendo diagnósticos más tempranos y precisos. Sin embargo, todavía existen varios retos que deben abordarse para su implementación generalizada. Entre estos desafíos se incluyen la necesidad de una validación clínica más amplia, la estandarización de los procedimientos de prueba y la reducción de los costos asociados con estas tecnologías avanzadas. Además, existe el riesgo de sobrediagnóstico, donde se detectan cánceres que no habrían causado síntomas clínicos significativos, lo que puede llevar a tratamientos innecesarios y perjudiciales para los pacientes ([SpringerLink](https://link.springer.com/article/10.1007/s44272-024-00015-x)).
 
 Existen varios casos de uso potenciales para un sistema de detección temprana de cáncer basado en análisis de sangre multianalito. Entre ellos se incluyen:
 
@@ -56,9 +137,11 @@ La implementación de sistemas de diagnóstico basados en datos no está exenta 
 
 ### Motivación para el Proyecto
 
-Este proyecto se basa en replicar y extender los hallazgos del estudio "Early Cancer Detection from Multianalyte Blood Test Results", con el objetivo de mejorar la precisión de la detección y clasificación del cáncer mediante el uso de modelos de aprendizaje automático. La motivación principal es abordar las limitaciones identificadas en estudios anteriores y explorar nuevas técnicas que puedan ofrecer una mayor sensibilidad y especificidad en la detección temprana del cáncer.
+Este proyecto se basa en replicar y extender los hallazgos del estudio "Early Cancer Detection from Multianalyte Blood Test Results", con el objetivo de mejorar la precisión en la detección y clasificación del cáncer mediante el uso de modelos de aprendizaje automático. La motivación principal es abordar las limitaciones identificadas en estudios anteriores y explorar nuevas técnicas que puedan ofrecer una mayor sensibilidad y especificidad en la detección temprana del cáncer.
 
-En particular, nos centraremos en desarrollar y validar modelos que no solo puedan detectar la presencia de cáncer, sino también clasificar el tipo específico de cáncer entre varias categorías. Esto implica utilizar datos de múltiples marcadores sanguíneos y aplicar algoritmos avanzados de aprendizaje supervisado para mejorar la precisión diagnóstica.
+En particular, nos centraremos en desarrollar y validar modelos que no solo puedan detectar la presencia de cáncer, sino también clasificar el tipo específico de cáncer entre varias categorías. Este proceso implica utilizar datos de múltiples marcadores sanguíneos y aplicar algoritmos avanzados de aprendizaje supervisado para mejorar la precisión diagnóstica. La clasificación del tipo de cáncer se realizará mediante la aplicación del teorema de la probabilidad total, lo que permitirá una evaluación más precisa y robusta de los diferentes tipos de cáncer.
+
+El teorema de la probabilidad total es una regla fundamental en la teoría de la probabilidad que permite calcular la probabilidad total de un evento a partir de las probabilidades condicionadas de dicho evento en diferentes escenarios. Fue desarrollado por el matemático suizo Jakob Bernoulli en el siglo XVIII. Este teorema se utiliza para descomponer un problema complejo en partes más simples, lo que facilita el análisis y la solución de problemas en diversas disciplinas, incluyendo la detección y clasificación del cáncer en este proyecto.
 
 ### Contribuciones Esperadas
 
@@ -94,6 +177,26 @@ Este proyecto tiene el potencial de contribuir significativamente al campo de la
 
    - **Objetivo**: Implementar una prueba de detección del cáncer que pueda ser fácilmente adoptada en clínicas y hospitales a nivel mundial.
    - **Justificación**: La accesibilidad a pruebas de detección efectivas es crucial para la detección temprana del cáncer, especialmente en áreas con recursos limitados ([DNA Science](https://dnascience.plos.org/2024/01/11/multi-cancer-early-detection-blood-tests-mced-debut/)).
+4. #### **Inserción en el Mercado y Adopción Global**:
+
+    - **Objetivo**: Introducir el sistema de detección temprana del cáncer en mercados globales clave, asegurando una adopción amplia en clínicas y hospitales.
+    - **Justificación**: Ampliar la presencia del producto en mercados internacionales contribuirá a mejorar el acceso de los pacientes a pruebas de detección avanzadas.
+    
+5. **Partnerships Estratégicas y Colaboraciones**:
+
+    - **Objetivo**: Establecer alianzas estratégicas con laboratorios de renombre y centros de investigación para validar y promover la tecnología de detección del cáncer.
+    - **Justificación**: Las colaboraciones con expertos en investigación y desarrollo fortalecerán la credibilidad del producto y acelerarán su integración en prácticas clínicas.
+    
+6. **Cumplimiento Normativo y Regulatorio**:
+
+    - **Objetivo**: Obtener las aprobaciones regulatorias necesarias (como la FDA en Estados Unidos o la CE en Europa) para comercializar la tecnología de detección del cáncer.
+    - **Justificación**: Cumplir con los estándares regulatorios es crucial para asegurar la confianza del mercado y la aceptación del producto por parte de los profesionales de la salud.
+    
+7. **Educación y Concientización Pública**:
+
+    - **Objetivo**: Educación pública y profesional sobre la importancia de la detección temprana del cáncer y las ventajas de las nuevas tecnologías de análisis de sangre.
+    - **Justificación**: Aumentar la conciencia pública y profesional puede conducir a una mayor demanda y aceptación del producto, así como fomentar prácticas de salud preventiva.   
+   
 
 ### Objetivos Analíticos
 
@@ -176,7 +279,7 @@ Para llevar a cabo este proyecto, hemos utilizado dos conjuntos de datos princip
 2. #### **Número de Variables**:
    
    - Primer conjunto de datos: 9 variables.
-   - Segundo conjunto de datos: 41 variables.
+   - Segundo conjunto de datos: 31 variables.
    
 3. #### **Tipología e Interpretación de las Variables**:
    
@@ -209,6 +312,7 @@ Para llevar a cabo este proyecto, hemos utilizado dos conjuntos de datos princip
 ### Análisis Descriptivo y Exploratorio de los Datos
 
 Se llevaron a cabo varios análisis descriptivos y exploratorios para entender mejor la distribución y características de los datos.
+
 
 1. ##### **Distribución de Marcadores Sanguíneos**:
 
@@ -336,12 +440,9 @@ Se llevaron a cabo varios análisis descriptivos y exploratorios para entender m
    4. **Distribución de Omega Score**:
       - **Descripción**: El Omega Score presenta una distribución altamente sesgada hacia la derecha, con la mayoría de los valores muy cerca de 0 y pocos valores extremadamente altos. Este tipo de distribución puede indicar la presencia de valores atípicos o una escala logarítmica subyacente en los datos.
       - ![Omega Score Distribution](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\output4.png)
-   5. **Distribución de CancerSEEK Logistic Regression Score**:
-      - **Descripción**: Esta variable presenta una distribución bimodal con picos alrededor de 0.2 y 1.0, lo cual podría indicar una separación clara entre dos grupos en la población estudiada, posiblemente indicando la presencia o ausencia de cáncer según el score.
-      - ![Omega Score Distribution](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\output5.png)
-
+   
    ##### **Distribución de las variables categóricas**
-
+   
    1. **Distribución de Tumor type**:
       - Este gráfico muestra la distribución de los diferentes tipos de tumores.
       - El tipo de tumor más frecuente es el "Normal" seguido por "Colorectum" y "Breast".
@@ -362,43 +463,38 @@ Se llevaron a cabo varios análisis descriptivos y exploratorios para entender m
       - La distribución es altamente asimétrica hacia la derecha, con la mayoría de los valores concentrados cerca de cero.
       - Hay pocos valores extremadamente altos, lo que indica la presencia de algunos outliers significativos.
       - ![Omega Score Distribution](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\output9.png)
-
    
-
+   
+   
    ##### **Correlaciones entre variables:**
-
+   
    En el análisis de datos, la identificación de correlaciones entre variables es fundamental para entender cómo se relacionan entre sí y cómo pueden influir en los resultados de los modelos predictivos. La correlación mide la fuerza y la dirección de la relación lineal entre dos variables. Un coeficiente de correlación puede variar entre -1 y 1, donde:
-
+   
    - 1 indica una correlación positiva perfecta,
    - -1 indica una correlación negativa perfecta, y
    - 0 indica que no hay correlación lineal.
-
+   
    Para nuestro estudio sobre la predicción del cáncer, hemos analizado las correlaciones entre varias variables tanto numéricas como categóricas. A continuación, se presentan y explican los gráficos de correlación generados.
-
+   
    1. **Correlación entre Variables Numéricas**
-
+   
       ![Correlación del DataFrame](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\corr1.png)
-
+   
       En este gráfico de calor se muestran las correlaciones entre las siguientes variables numéricas:
-
+   
       - AXL (pg/ml)
       - sPECAM-1 (pg/ml)
       - TIMP-2 (pg/ml)
       - Omega score
-      - CancerSEEK Logistic Regression Score
-
+      
       Las principales observaciones de este gráfico son:
-
+      
       1. **AXL y sPECAM-1**: Hay una correlación positiva moderada (r ≈ 0.40), lo que indica que a medida que los niveles de AXL aumentan, los niveles de sPECAM-1 también tienden a aumentar.
-
       2. **sPECAM-1 y TIMP-2**: También presentan una correlación positiva moderada (r ≈ 0.31).
-
       3. **AXL y TIMP-2**: La correlación entre estos dos marcadores es más baja pero aún positiva (r ≈ 0.29).
-
-      3. **Omega score y CancerSEEK Logistic Regression Score**: Presentan una correlación positiva baja (r ≈ 0.19).
-
+      
       En general, estas correlaciones indican algunas relaciones lineales positivas entre los biomarcadores estudiados y las puntuaciones de riesgo de cáncer.
-
+      
    2. **Correlación entre Variables Categóricas**
 
    ![Correlación entre variables categóricas](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\corr2.png)
@@ -409,37 +505,28 @@ Se llevaron a cabo varios análisis descriptivos y exploratorios para entender m
 
    1. **ID del Paciente y ID de Muestra**: La correlación es alta (r ≈ 0.50), lo que es esperado ya que cada muestra está vinculada a un paciente específico.
    2. **Tumor type y varios marcadores**: Se observan varias correlaciones moderadas con distintos marcadores tumorales, lo que sugiere que ciertos tipos de tumores tienen perfiles biomarcadores característicos.
-   3. **CancerSEEK Test Result y varios marcadores**: Se destacan correlaciones con múltiples marcadores, indicando la complejidad de las relaciones entre los resultados del test y los distintos biomarcadores.
-
+   
    ##### Matriz de Correlación Detallada
-
+   
    En la matriz de correlación detallada se identificaron las siguientes relaciones notables:
-
-   | variable_1                           | variable_2                           | r         | abs_r    |
-   | ------------------------------------ | ------------------------------------ | --------- | -------- |
-   | AXL (pg/ml)                          | sPECAM-1 (pg/ml)                     | 0.396347  | 0.396347 |
-   | sPECAM-1 (pg/ml)                     | AXL (pg/ml)                          | 0.396347  | 0.396347 |
-   | sPECAM-1 (pg/ml)                     | TIMP-2 (pg/ml)                       | 0.305282  | 0.305282 |
-   | TIMP-2 (pg/ml)                       | sPECAM-1 (pg/ml)                     | 0.305282  | 0.305282 |
-   | TIMP-2 (pg/ml)                       | AXL (pg/ml)                          | 0.289164  | 0.289164 |
-   | AXL (pg/ml)                          | TIMP-2 (pg/ml)                       | 0.289164  | 0.289164 |
-   | Omega score                          | CancerSEEK Logistic Regression Score | 0.194097  | 0.194097 |
-   | CancerSEEK Logistic Regression Score | Omega score                          | 0.194097  | 0.194097 |
-   | AXL (pg/ml)                          | CancerSEEK Logistic Regression Score | 0.085099  | 0.085099 |
-   | CancerSEEK Logistic Regression Score | AXL (pg/ml)                          | 0.085099  | 0.085099 |
-   | TIMP-2 (pg/ml)                       | CancerSEEK Logistic Regression Score | 0.049577  | 0.049577 |
-   | CancerSEEK Logistic Regression Score | TIMP-2 (pg/ml)                       | 0.049577  | 0.049577 |
-   | sPECAM-1 (pg/ml)                     | Omega score                          | -0.034447 | 0.034447 |
-   | Omega score                          | sPECAM-1 (pg/ml)                     | -0.034447 | 0.034447 |
-   | Omega score                          | TIMP-2 (pg/ml)                       | -0.021214 | 0.021214 |
-   | TIMP-2 (pg/ml)                       | Omega score                          | -0.021214 | 0.021214 |
-   | Omega score                          | AXL (pg/ml)                          | -0.019419 | 0.019419 |
-   | AXL (pg/ml)                          | Omega score                          | -0.019419 | 0.019419 |
-   | sPECAM-1 (pg/ml)                     | CancerSEEK Logistic Regression Score | 0.008435  | 0.008435 |
-   | CancerSEEK Logistic Regression Score | sPECAM-1 (pg/ml)                     | 0.008435  | 0.008435 |
-
+   
+   | variable_1       | variable_2       | r         | abs_r    |
+   | ---------------- | ---------------- | --------- | -------- |
+   | AXL (pg/ml)      | sPECAM-1 (pg/ml) | 0.396347  | 0.396347 |
+   | sPECAM-1 (pg/ml) | AXL (pg/ml)      | 0.396347  | 0.396347 |
+   | sPECAM-1 (pg/ml) | TIMP-2 (pg/ml)   | 0.305282  | 0.305282 |
+   | TIMP-2 (pg/ml)   | sPECAM-1 (pg/ml) | 0.305282  | 0.305282 |
+   | TIMP-2 (pg/ml)   | AXL (pg/ml)      | 0.289164  | 0.289164 |
+   | AXL (pg/ml)      | TIMP-2 (pg/ml)   | 0.289164  | 0.289164 |
+   | sPECAM-1 (pg/ml) | Omega score      | -0.034447 | 0.034447 |
+   | Omega score      | sPECAM-1 (pg/ml) | -0.034447 | 0.034447 |
+   | Omega score      | TIMP-2 (pg/ml)   | -0.021214 | 0.021214 |
+   | TIMP-2 (pg/ml)   | Omega score      | -0.021214 | 0.021214 |
+   | Omega score      | AXL (pg/ml)      | -0.019419 | 0.019419 |
+   | AXL (pg/ml)      | Omega score      | -0.019419 | 0.019419 |
+   
    Estos valores de correlación muestran cómo se relacionan los diferentes biomarcadores y las puntuaciones de los tests, proporcionando información valiosa para la modelización predictiva y la comprensión de las interacciones biológicas subyacentes.
-
+   
    
 
 ### Análisis profundo de los datos
@@ -486,17 +573,9 @@ A continuación, se presentan y comentan los gráficos obtenidos para algunas de
 
    - **Descripción:** La distribución del Omega score muestra una alta concentración de valores en el extremo inferior, con una larga cola hacia la derecha. Esto sugiere que la mayoría de los valores son bajos, con pocos valores altos.
 
-5. **CancerSEEK Logistic Regression Score:**
-
-   - Gráfico:
-
-     ![Correlación entre variables categóricas](C:\Users\mar27\OneDrive\Documentos\CURSOS\DATA_SCIENCE_KSCHOOL\00_PROYECTO\dist5.png)
-
-   - **Descripción:** La distribución del score de regresión logística de CancerSEEK muestra una forma bimodal, con picos significativos en ambos extremos del rango. Esto indica que los valores tienden a agruparse cerca de los extremos, con menos valores en el rango medio.
-
 #### Análisis de Asimetría y Curtosis
 
-- **Asimetría (Skewness):** La asimetría mide la simetría de la distribución de datos. Una asimetría positiva indica que la cola derecha es más larga o gruesa que la izquierda (más valores bajos), mientras que una asimetría negativa indica lo contrario. En el análisis, las variables TIMP-2 y CancerSEEK Logistic Regression Score muestran asimetría positiva.
+- **Asimetría (Skewness):** La asimetría mide la simetría de la distribución de datos. Una asimetría positiva indica que la cola derecha es más larga o gruesa que la izquierda (más valores bajos), mientras que una asimetría negativa indica lo contrario. En el análisis, las variables TIMP-2 muestra asimetría positiva.
 - **Curtosis:** La curtosis mide la "puntiagudez" de la distribución. Una alta curtosis indica una distribución con picos elevados y colas largas. La variable TIMP-2 muestra una curtosis elevada, lo que indica la presencia de valores extremos significativos.
 
 #### Pruebas de Normalidad
@@ -510,53 +589,31 @@ En resumen, la mayoría de las variables numéricas analizadas no siguen una dis
 
 ### Limpieza de los datos
 
-1. **Eliminación de Cadenas de Texto No Deseadas:** Al tratarse de cadenas de texto, se observa que varios registros contienen caracteres '*' y '**'. 
+El análisis de valores nulos y la limpieza de datos son pasos cruciales en la preparación de un conjunto de datos para el modelado. En nuestro proyecto, nos encontramos con ciertas particularidades y decisiones importantes en relación con los valores nulos y la limpieza de datos.
 
-2. **Cambio de Tipo de Variables:** Algunas variables que representan marcadores sanguíneos están en formato `Object`. Estas variables se convierten a tipo `numeric` para permitir un análisis cuantitativo.
+#### Análisis de Valores Nulos
 
-3. **Tratamiento de Valores Nulos:** Se identifican y tratan los valores nulos en el DataFrame `df6`. Se han aplicado varios enfoques para imputar los valores faltantes en el DataFrame `df6`. Cada uno de estos enfoques tiene sus propias ventajas y se elige en función del contexto y de la naturaleza de los datos. A continuación, se describen detalladamente los enfoques utilizados.
+Se observó que el parámetro "AJCC stage" presenta valores nulos en varias tablas. Esto no es sorprendente ya que este parámetro describe la severidad del cáncer y su ausencia en algunos registros puede indicar que los pacientes estaban libres de cáncer en el momento del estudio. Una situación similar se presenta con la variable "Histopatología" en el DataFrame 4. Para estas variables, podría considerarse la imputación de valores consensuados en lugar de dejarlas como nulas.
 
-   ##### Enfoque 1: Relleno con la Media de la Muestra
+#### Limpieza de los Datos
 
-   En este enfoque, los valores nulos se rellenan con la media de la muestra de cada columna numérica. Este método es simple y rápido, y es útil cuando se quiere mantener la media de la columna intacta.
+El conjunto de datos inicial se encuentra bastante pulido, lo que significa que hay pocos valores nulos y solo unos pocos caracteres indeseados, fácilmente detectables y suprimibles. Sin embargo, la presencia de estos valores nulos y caracteres indeseados requería una atención cuidadosa para asegurar la calidad del conjunto de datos final.
 
-   #####  Enfoque 2: Relleno Mediante Predicción de Valores Usando KNN
+1. **Detección y Supresión de Caracteres Indeseados**: Identificamos y eliminamos caracteres indeseados como '*' y '**' que aparecían en algunas cadenas de texto. Esta limpieza básica fue fundamental para asegurar la precisión en el análisis posterior.
 
-   El método KNN (K-Nearest Neighbors) se utiliza para imputar los valores faltantes prediciendo los valores en función de los vecinos más cercanos.
+2. **Transformación del Tipo de Datos**: Convertimos varias columnas de tipo objeto a tipo numérico, lo cual es esencial para facilitar el análisis y modelado. Esto incluye variables de marcadores sanguíneos que inicialmente eran de tipo objeto.
 
-   ##### Enfoque 3: Relleno Mediante Predicción de Valores Usando Árboles de Decisión
+3. **Relleno de Valores Nulos**:
+    - **Media de la Muestra**: Probamos varias técnicas para el relleno de valores nulos, incluyendo la imputación por la media de la muestra. Esta técnica resultó ser la más conveniente y efectiva dado el contexto y la cantidad limitada de valores nulos.
+    - **Imputación Consensuada**: Para variables específicas como "AJCC stage" y "Histopatología", consideramos la imputación de valores consensuados, dado que estos parámetros tienen una gran influencia en el análisis y es preferible evitar la imputación con valores genéricos.
 
-   Este enfoque utiliza árboles de decisión para predecir y rellenar los valores faltantes en función del resto de las variables.
+4. **Resumen de Técnicas de Imputación Utilizadas**:
+    - **Relleno con la Media**: Utilizamos la media de la muestra para rellenar la mayoría de los valores nulos en las variables numéricas.
+    - **Predicción de Valores con KNN**: Aplicamos el algoritmo K-Nearest Neighbors (KNN) para predecir y rellenar algunos valores nulos, aprovechando la información de otras variables correlacionadas.
+    - **Árboles de Decisión**: Empleamos árboles de decisión para predecir valores nulos en función de las demás variables del conjunto de datos.
+    - **Regresión Lineal**: Implementamos regresión lineal para predecir y rellenar valores nulos, utilizando la relación entre las variables.
 
-   ##### Enfoque 4: Relleno Mediante Predicción de Valores Usando Regresión Lineal
-
-   Este enfoque utiliza regresión lineal para predecir y rellenar los valores faltantes en función del resto de las variables.
-
-   #### Comparación de los Valores con los que se Rellenarán los Nulos Según Cada Técnica
-
-   Finalmente, se comparan los resultados de las diferentes técnicas de imputación para determinar cuál proporciona los mejores resultados. 
-
-   Esta comparación permite identificar cuál de las técnicas de imputación es más adecuada para los datos específicos del proyecto, asegurando la mejor calidad de los datos imputados para el análisis y la construcción de modelos predictivos.
-
-   ##### Resultados de la Comparación
-
-   La tabla final de comparación muestra cómo cada técnica de imputación ha rellenado los valores nulos en el DataFrame. Aquí se incluyen algunas de las columnas clave:
-
-   | AFP (pg/ml) | Angiopoietin-2 (pg/ml) | AXL (pg/ml) | CA-125 (U/ml) | CA 15-3 (U/ml) | CA19-9 (U/ml) | CD44 (ng/ml) | CEA (pg/ml) | CYFRA 21-1 (pg/ml) | DKK1 (ng/ml) | SHBG (nM) | sHER2/sEGFR2/sErbB2 (pg/ml) | sPECAM-1 (pg/ml) | TGFa (pg/ml) | Thrombospondin-2 (pg/ml) | TIMP-1 (pg/ml) | TIMP-2 (pg/ml) | Omega score | CancerSEEK Logistic Regression Score | CancerSEEK Test Result |
-   | ----------- | ---------------------- | ----------- | ------------- | -------------- | ------------- | ------------ | ----------- | ------------------ | ------------ | --------- | --------------------------- | ---------------- | ------------ | ------------------------ | -------------- | -------------- | ----------- | ------------------------------------ | ---------------------- |
-   | 1583.450    | 5598.50                | 3621.04     | 5.090         | 19.08          | 16.452        | 9.81         | 540.07      | 1938.654           | 0.78         | 55.06     | 6832.07                     | 9368.53          | 16.086       | 21863.74                 | 56428.71       | 39498.82       | 2.962820    | 0.938342                             | Positive               |
-   | 715.308     | 20936.35               | 2772.96     | 7.270         | 10.04          | 40.910        | 27.57        | 5902.43     | 1938.654           | 0.77         | 72.92     | 5549.47                     | 6224.55          | 16.086       | 29669.66                 | 73940.49       | 41277.09       | 2.445405    | 0.925363                             | Positive               |
-   | 4365.530    | 2350.93                | 4120.77     | 4.854         | 16.96          | 16.452        | 14.59        | 973.75      | 1976.940           | 0.90         | 173.78    | 3698.16                     | 4046.48          | 179.030      | 6020.47                  | 22797.28       | 28440.60       | 1.215758    | 0.852367                             | Negative               |
-   | 715.308     | 1604.34                | 2029.96     | 5.390         | 8.31           | 16.452        | 7.78         | 2027.53     | 1938.654           | 0.64         | 29.47     | 5856.00                     | 6121.93          | 16.086       | 4331.02                  | 20441.19       | 25896.73       | 1.640793    | 0.617639                             | Negative               |
-   | 801.300     | 2087.57                | 2069.17     | 4.854         | 11.73          | 16.452        | 12.21        | 614.49      | 1938.654           | 0.78         | 78.07     | 5447.93                     | 6982.32          | 16.086       | 2311.91                  | 56288.51       | 49425.20       | 1.325771    | 0.318434                             | Negative               |
-   | ...         | ...                    | ...         | ...           | ...            | ...           | ...          | ...         | ...                | ...          | ...       | ...                         | ...              | ...          | ...                      | ...            | ...            | ...         | ...                                  | ...                    |
-   | 879.498     | 1484.70                | 2096.76     | 24.820        | 10.30          | 42.390        | 14.92        | 914.00      | 1970.916           | 3.05         | 115.24    | 5390.31                     | 8538.58          | 16.890       | 599.40                   | 167799.61      | 50128.60       | 0.983813    | 0.980312                             | Positive               |
-   | 1337.330    | 1607.90                | 852.37      | 5.580         | 9.80           | 16.440        | 12.32        | 1179.51     | 1970.916           | 1.74         | 147.17    | 7951.03                     | 12966.19         | 16.890       | 599.40                   | 123443.76      | 54066.98       | 3.915387    | 0.999995                             | Positive               |
-   | 879.498     | 1592.84                | 1044.45     | 30.480        | 8.48           | 16.440        | 8.26         | 443.01      | 3589.730           | 0.73         | 104.63    | 2396.36                     | 1901.41          | 16.890       | 599.40                   | 104070.89      | 39844.02       | 7.962561    | 1.000000                             | Positive               |
-   | 879.498     | 5267.95                | 1445.69     | 1469.450      | 23.74          | 62.260        | 16.53        | 443.01      | 50659.050          | 1.24         | 73.55     | 3079.81                     | 5312.90          | 16.890       | 6864.33                  | 110579.24      | 42921.13       | 0.807685    | 1.000000                             | Positive               |
-   | 879.498     | 3546.43                | 1493.32     | 1428.310      | 836.85         | 37.900        | 13.78        | 443.01      | 3060.110           | 1.01         | 72.22     | 3967.55                     | 4045.18          | 16.890       | 12877.10                 | 88464.04       | 47219.24       | 1.425203    | 1.000000                             | Positive               |
-
-   Esta tabla proporciona una visión detallada de cómo cada técnica de imputación ha rellenado los valores nulos en el DataFrame, permitiendo una comparación efectiva de las distintas metodologías y su impacto en la calidad y consistencia de los datos.
+Al finalizar el proceso de limpieza y transformación de datos, obtuvimos un conjunto de datos bien estructurado y adecuado para el análisis y modelado. Esta atención a los detalles en la limpieza de datos asegura que los modelos entrenados sean más precisos y confiables, proporcionando resultados más robustos y útiles para la detección del cáncer.
 
 
 
@@ -581,50 +638,46 @@ Para evaluar la importancia de cada variable en la predicción de la variable ob
 
 El coeficiente de correlación de Pearson se utiliza para medir la relación lineal entre variables continuas y la variable objetivo binaria. Este método fue el utilizado en [DNA Science](https://dnascience.plos.org/2024/01/11/multi-cancer-early-detection-blood-tests-mced-debut/) y proporciona una primera aproximación sobre la relevancia de cada variable.
 
-| **Variable**                         | **Correlación** |
-| ------------------------------------ | --------------- |
-| CancerSEEK Logistic Regression Score | 0.732341        |
-| CancerSEEK Test Result               | 0.640972        |
-| OPN (pg/ml)                          | 0.458352        |
-| Prolactin (pg/ml)                    | 0.324378        |
-| TIMP-1 (pg/ml)                       | 0.300539        |
-| GDF15 (ng/ml)                        | 0.247428        |
-| HGF (pg/ml)                          | 0.242512        |
-| Myeloperoxidase (ng/ml)              | 0.221877        |
-| FGF2 (pg/ml)                         | 0.192212        |
-| IL-6 (pg/ml)                         | 0.186625        |
-| Galectin-3 (ng/ml)                   | 0.180836        |
-| Angiopoietin-2 (pg/ml)               | 0.170233        |
-| OPG (ng/ml)                          | 0.147721        |
-| Omega score                          | 0.146759        |
+| **Variable**            | **Correlación** |
+| ----------------------- | --------------- |
+| OPN (pg/ml)             | 0.458352        |
+| Prolactin (pg/ml)       | 0.324378        |
+| TIMP-1 (pg/ml)          | 0.300539        |
+| GDF15 (ng/ml)           | 0.247428        |
+| HGF (pg/ml)             | 0.242512        |
+| Myeloperoxidase (ng/ml) | 0.221877        |
+| FGF2 (pg/ml)            | 0.192212        |
+| IL-6 (pg/ml)            | 0.186625        |
+| Galectin-3 (ng/ml)      | 0.180836        |
+| Angiopoietin-2 (pg/ml)  | 0.170233        |
+| OPG (ng/ml)             | 0.147721        |
+| Omega score             | 0.146759        |
 
-Los resultados obtenidos indican que la "CancerSEEK Logistic Regression Score" y la "CancerSEEK Test Result" son las variables con mayor correlación con la variable objetivo, seguidas de marcadores como OPN y Prolactin.
+Los resultados obtenidos indican que la  OPN y Prolactin son las variables con mayor correlación con la variable objetivo.
 
 ##### Método 2: Variables Discretizadas (Árbol de Decisión)
 
 En este método, se utilizó un árbol de decisión para discretizar las variables continuas. Este enfoque permite identificar puntos de corte óptimos basados en la reducción de la impureza.
 
-| **Variable**                         | **Correlación** |
-| ------------------------------------ | --------------- |
-| CancerSEEK Logistic Regression Score | 0.713090        |
-| CancerSEEK Test Result               | 0.640972        |
-| OPN (pg/ml)                          | 0.575480        |
-| IL-6 (pg/ml)                         | 0.483620        |
-| IL-8 (pg/ml)                         | 0.464828        |
-| HGF (pg/ml)                          | 0.454991        |
-| Prolactin (pg/ml)                    | 0.453270        |
-| Omega score                          | 0.378112        |
-| GDF15 (ng/ml)                        | 0.365248        |
-| CYFRA 21-1 (pg/ml)                   | 0.356245        |
-| Myeloperoxidase (ng/ml)              | 0.351481        |
-| sEGFR (pg/ml)                        | 0.319982        |
-| CA-125 (U/ml)                        | 0.312094        |
-| CEA (pg/ml)                          | 0.308045        |
-| TIMP-1 (pg/ml)                       | 0.301340        |
-| CA19-9 (U/ml)                        | 0.266444        |
-| Angiopoietin-2 (pg/ml)               | 0.233881        |
-| HE4 (pg/ml)                          | 0.232766        |
-| Galectin-3 (ng/ml)                   | 0.232425        |
+| **Variable**            | **Correlación** |
+| ----------------------- | --------------- |
+| OPN (pg/ml)             | 0.575480        |
+| IL-6 (pg/ml)            | 0.483620        |
+| IL-8 (pg/ml)            | 0.464828        |
+| HGF (pg/ml)             | 0.454991        |
+| Prolactin (pg/ml)       | 0.453270        |
+| Omega score             | 0.378112        |
+| GDF15 (ng/ml)           | 0.365248        |
+| CYFRA 21-1 (pg/ml)      | 0.356245        |
+| Myeloperoxidase (ng/ml) | 0.351481        |
+| sEGFR (pg/ml)           | 0.319982        |
+| CA-125 (U/ml)           | 0.312094        |
+| CEA (pg/ml)             | 0.308045        |
+| TIMP-1 (pg/ml)          | 0.301340        |
+| CA19-9 (U/ml)           | 0.266444        |
+| Angiopoietin-2 (pg/ml)  | 0.233881        |
+| HE4 (pg/ml)             | 0.232766        |
+| Galectin-3 (ng/ml)      | 0.232425        |
 
 Este método resaltó variables como OPN, IL-6, e IL-8 como las más relevantes para la predicción del cáncer.
 
@@ -1165,7 +1218,7 @@ Las técnicas de reducción de dimensionalidad (PCA, ICA, SVD) demostraron su ca
 
 En esta sección, se presentan los resultados obtenidos a partir del análisis de los modelos de aprendizaje supervisado y no supervisado, con el objetivo de evaluar su rendimiento en la detección de cáncer utilizando los biomarcadores seleccionados.
 
-#### Evaluación de los Modelos Supervisados
+### Evaluación de los Modelos Supervisados
 
 Los modelos supervisados fueron evaluados en base a múltiples métricas, incluyendo precisión (accuracy), precisión positiva (precision), exhaustividad (recall) y la puntuación F1 (F1-score). A continuación, se detallan los resultados obtenidos para cada modelo:
 
@@ -1233,11 +1286,11 @@ Los modelos supervisados fueron evaluados en base a múltiples métricas, incluy
 15. **Red Neuronal Recurrente (RNN)**
     - Las RNN, aunque más adecuadas para datos secuenciales, mostraron un rendimiento aceptable en la predicción de cáncer. Su precisión y puntuación F1 fueron competitivas, aunque no superaron a los mejores modelos supervisados.
 
-### Conclusión de los Modelos Supervisados
+#### Conclusión de los Modelos Supervisados
 
 En general, los modelos de Gradient Boosting y Random Forest demostraron ser los más efectivos para la predicción de cáncer utilizando los biomarcadores seleccionados, debido a su capacidad para manejar interacciones complejas y reducir el sobreajuste. Las SVM también mostraron un alto rendimiento. Estos modelos pueden ser considerados los más adecuados para aplicaciones clínicas, donde la precisión y la capacidad para manejar datos heterogéneos son cruciales.
 
-#### Evaluación de los Modelos No Supervisados
+### Evaluación de los Modelos No Supervisados
 
 | Modelo                       | Silhouette Score | Davies-Bouldin Index | Calinski-Harabasz Index |
 | ---------------------------- | ---------------- | -------------------- | ----------------------- |
@@ -1284,7 +1337,7 @@ En general, los modelos de Gradient Boosting y Random Forest demostraron ser los
 10. **Reducción de Dimensionalidad mediante SVD**
     - Similar a PCA, SVD ayudó a reducir la dimensionalidad pero no mejoró la capacidad de clustering de los modelos.
 
-### Conclusión de los Modelos No Supervisados
+#### Conclusión de los Modelos No Supervisados
 
 Los modelos no supervisados no proporcionaron un valor significativo en la identificación de patrones relevantes en los datos de biomarcadores de cáncer. Los métodos de reducción de dimensionalidad como PCA y SVD fueron útiles para simplificar los datos, pero no mejoraron la capacidad de clustering. Los modelos de clustering como KMeans y DBSCAN no lograron formar clústeres clínicamente relevantes. Dado que ya se había realizado una selección de variables basadas en el Information Gain, una mayor reducción de dimensionalidad no fue beneficiosa. En resumen, los métodos no supervisados no aportaron información adicional útil para la detección de cáncer en este contexto.
 
@@ -1311,7 +1364,7 @@ El despliegue se llevará a cabo en las siguientes fases:
 **Objetivos:**
 - Verificación de la integración del software.
 - Comprobación de las comunicaciones y acceso a ficheros.
-- Realización de ajustes menores (fine tuning) necesarios.
+- Realización de fine tuning necesarios.
 
 **Actividades:**
 - **Verificación de Software y Comunicaciones**: Asegurar que el modelo interactúa correctamente con el sistema existente, verificando que no hay problemas de compatibilidad.
@@ -1381,6 +1434,121 @@ El despliegue se llevará a cabo en las siguientes fases:
 #### Conclusión
 
 El plan de despliegue está diseñado para asegurar una implementación exitosa y sin interrupciones del modelo de detección de cáncer. A través de una entrega inicial de verificación, una entrega definitiva, capacitación del personal, y una evaluación continua, buscamos minimizar los riesgos y maximizar los beneficios del sistema. Este enfoque garantiza que el modelo no solo se implemente eficazmente, sino que también se mantenga y mejore continuamente, proporcionando un valor significativo en la detección temprana y el tratamiento del cáncer.
+
+
+
+## Puesta en Valor
+
+#### Plan de Despliegue Operativo
+
+En esta sección se presentará la estrategia para desplegar los resultados analíticos obtenidos del modelo de predicción de cáncer en los procesos de las entidades interesadas. Este plan incluye tanto la preparación de los modelos entrenados como la oferta de estos modelos a terceros para su implementación en entornos productivos.
+
+#### Objetivo
+
+El objetivo principal del despliegue es proporcionar a las entidades interesadas, como hospitales, clínicas y laboratorios de investigación, una herramienta eficiente y precisa para la detección temprana del cáncer a partir de biomarcadores en análisis de sangre. Esto permitirá a los profesionales de la salud tomar decisiones más informadas y mejorar los resultados de los pacientes.
+
+#### Plan de Despliegue
+
+El despliegue se realizará en varias fases para garantizar un proceso fluido y controlado, facilitando la integración con los sistemas de las entidades receptoras.
+
+1. **Fase de Preparación**
+
+   - **Verificación Inicial**: Se llevará a cabo una revisión exhaustiva del código y los modelos para asegurar que están libres de errores y listos para ser entregados.
+   - **Documentación Completa**: Preparación de documentación detallada, incluyendo manuales de usuario, guías de integración y especificaciones técnicas.
+
+2. **Fase de Oferta**
+
+   - **Identificación de Entidades Interesadas**: Identificar y contactar a hospitales, clínicas y laboratorios que puedan beneficiarse del uso de los modelos.
+   - **Presentación de la Solución**: Realización de presentaciones y demostraciones para mostrar los beneficios y la precisión del modelo, destacando su capacidad para mejorar la detección temprana del cáncer.
+
+3. **Fase de Implementación**
+
+   - **Entrega de Modelos**: Proporcionar los modelos entrenados junto con la documentación necesaria a las entidades receptoras.
+   - **Asesoramiento en la Integración**: Ofrecer soporte técnico y asesoramiento durante el proceso de integración de los modelos en los sistemas de las entidades.
+
+4. **Fase de Pruebas**
+
+   - **Pruebas de Funcionamiento**: Asistir a las entidades en la realización de pruebas exhaustivas para asegurar que el modelo funciona correctamente en su entorno productivo.
+   - **Pruebas de Usuario**: Facilitar un periodo de prueba donde los usuarios finales puedan interactuar con el modelo y proporcionar retroalimentación.
+
+5. **Fase de Monitoreo y Mantenimiento**
+
+   - **Monitoreo Continuo**: Implementar herramientas de monitoreo para supervisar el desempeño del modelo y la aplicación, asegurando la detección temprana de cualquier problema.
+   - **Actualizaciones y Mejoras**: Planificación de un ciclo regular de actualizaciones para incorporar mejoras basadas en la retroalimentación de los usuarios y los avances en la investigación.
+
+#### Ventajas
+
+- **Detección Temprana y Precisa**: La implementación de este modelo permitirá la detección temprana del cáncer, mejorando las tasas de supervivencia y reduciendo los costos de tratamiento.
+- **Optimización de Recursos**: Al automatizar el proceso de análisis y predicción, se optimiza el uso de recursos médicos y se reduce la carga de trabajo para los profesionales de salud.
+- **Accesibilidad**: Las entidades receptoras podrán integrar fácilmente los modelos en sus sistemas, mejorando la accesibilidad a diagnósticos tempranos y precisos.
+
+#### Riesgos y Mitigaciones
+
+- **Riesgo de Inexactitud en las Predicciones**: Aunque el modelo ha sido entrenado y validado exhaustivamente, siempre existe el riesgo de predicciones inexactas. Para mitigar esto, se implementarán mecanismos de doble verificación y se proporcionará una guía clara sobre cómo interpretar los resultados.
+- **Riesgo de Seguridad de Datos**: La protección de datos sensibles de los pacientes es crucial. Se implementarán medidas de seguridad robustas, incluyendo cifrado de datos y protocolos de acceso seguro.
+- **Resistencia al Cambio**: Algunos profesionales de la salud pueden ser reacios a confiar en sistemas automatizados. Se planificarán sesiones de formación y demostraciones para mostrar los beneficios y la fiabilidad del sistema.
+
+#### Aplicación Complementaria
+
+Además del modelo principal, se ha desarrollado una aplicación complementaria que permite a los usuarios introducir parámetros de análisis de sangre y seleccionar el modelo de predicción para obtener resultados inmediatos. La aplicación no es el objetivo final del proyecto, pero añade un valor significativo al permitir un acceso más fácil y rápido a las predicciones.
+
+- **Funcionalidades de la Aplicación**:
+  - Entrada de Parámetros: Los usuarios pueden introducir datos de análisis de sangre.
+  - Selección de Modelos: Posibilidad de seleccionar entre diferentes modelos de predicción.
+  - Resultados de Predicción: La aplicación muestra si el paciente tiene cáncer o no, basado en los datos introducidos.
+
+#### Conclusión
+
+La puesta en valor de este proyecto mediante la oferta de los modelos entrenados a entidades interesadas y la implementación de una aplicación complementaria no solo mejorará la detección temprana del cáncer, sino que también optimizará los recursos médicos y aumentará la accesibilidad a diagnósticos rápidos y precisos. Este enfoque asegura que los avances analíticos se traduzcan en beneficios clínicos tangibles, alineándose con los objetivos establecidos en la fase de Comprensión de Negocio y Evaluación y Presentación de Resultados.
+
+
+
+## Conclusiones
+
+### Resumen de Objetivos Alcanzados
+
+El proyecto ha logrado varios objetivos clave en el desarrollo de modelos de machine learning para la detección del cáncer a partir de biomarcadores en análisis de sangre. Entre los logros más destacados se encuentran:
+
+1. **Desarrollo de Modelos Supervisados**: Se implementaron diversos modelos de aprendizaje supervisado como regresión logística, Random Forest, KNN, AdaBoost, Gradient Boosting y Voting Classifier. Estos modelos se evaluaron exhaustivamente, y se determinó que algunos, como Random Forest y Gradient Boosting, ofrecían los mejores resultados en términos de precisión y capacidad predictiva.
+
+2. **Validación Cruzada**: Se aplicó la validación cruzada para asegurar que los modelos generalicen bien a nuevos datos. Se utilizaron métricas como precisión, recall y F1-score para evaluar el rendimiento de los modelos.
+
+3. **Desarrollo de Aplicación**: Se creó la aplicación 'CancerDetector.py', que permite a los usuarios introducir parámetros de análisis de sangre y seleccionar un modelo para predecir la presencia de cáncer. La aplicación también incluye una pestaña para predecir el tipo de cáncer utilizando un conjunto de modelos combinados mediante Voting Classifier.
+
+4. **Análisis de Modelos No Supervisados**: Aunque se exploraron técnicas de aprendizaje no supervisado como KMeans, DBSCAN y GMM, se concluyó que estos modelos no eran adecuados para el tipo de datos y el objetivo del proyecto, ya que no aportaban mejoras significativas en la predicción del cáncer.
+
+### Análisis Crítico
+
+#### Calidad y Cantidad de Datos
+
+- **Calidad de los Datos**: La calidad de los datos utilizados en este estudio es alta, con biomarcadores seleccionados específicamente para la detección del cáncer. Sin embargo, la muestra es pequeña, lo que limita la capacidad de los modelos para generalizar y puede llevar a problemas de sobreajuste.
+- **Generación de Datos Sintéticos**: Aunque se utilizó el modelo CTGAN para generar datos sintéticos y aumentar la muestra, este enfoque puede introducir sesgos y no replicar completamente las complejas relaciones entre los biomarcadores.
+
+#### Modelos y Resultados
+
+- **Modelos Supervisados**: Los modelos supervisados demostraron ser eficaces para la predicción del cáncer, con Random Forest y Gradient Boosting destacándose como los más precisos. Sin embargo, la variabilidad en las predicciones sugiere que hay espacio para mejorar en la optimización de hiperparámetros y en la recolección de más datos.
+- **Modelos No Supervisados**: Los modelos no supervisados no proporcionaron mejoras significativas. Esto se debe a la naturaleza específica de los datos y a la necesidad de predicciones precisas en lugar de agrupaciones o patrones generales.
+
+### Conclusiones Generales
+
+1. **Muestra de Datos**: Es crucial aumentar la muestra de datos para mejorar la robustez y la confiabilidad de los modelos. La recolección de más datos reales sería ideal, aunque los datos sintéticos pueden ser un complemento útil.
+
+2. **Optimización de Modelos**: Continuar ajustando los hiperparámetros y explorando nuevas arquitecturas de modelos podría mejorar los resultados. Agregar más modelos al Voting Classifier también podría aumentar la precisión de las predicciones.
+
+3. **Aplicación Práctica**: La aplicación desarrollada, 'CancerDetector.py', es una herramienta útil para poner a prueba los modelos entrenados. Permite a los usuarios experimentar con diferentes modelos y ver cómo los distintos biomarcadores afectan las predicciones.
+
+4. **Enfoque en la Calidad**: Dado que los datos son de alta calidad pero en pequeña cantidad, es importante mantener un enfoque en la calidad de los datos recolectados en el futuro. Datos más diversos y en mayor cantidad permitirán entrenar modelos más generales y menos propensos al sobreajuste.
+
+5. **Relevancia de los Biomarcadores**: Los biomarcadores seleccionados han demostrado ser efectivos en la predicción del cáncer. Sin embargo, es fundamental seguir investigando y validando estos biomarcadores en estudios futuros para confirmar su relevancia y descubrir nuevos marcadores que puedan mejorar aún más las predicciones.
+
+### Próximos Pasos
+
+1. **Recolección de Más Datos**: Buscar colaboraciones con instituciones médicas y de investigación para recolectar más datos de pacientes.
+2. **Mejora de la Aplicación**: Integrar más funcionalidades en la aplicación, como la visualización de tendencias y patrones en los biomarcadores.
+3. **Estudio de Nuevas Técnicas**: Explorar técnicas de machine learning más avanzadas y su potencial para mejorar la predicción del cáncer.
+4. **Validación en el Mundo Real**: Realizar pruebas piloto de los modelos en entornos clínicos para validar su efectividad en la práctica.
+
+En resumen, aunque el proyecto ha alcanzado sus objetivos principales y ha desarrollado herramientas útiles para la detección del cáncer, hay áreas claras para la mejora y la expansión futura. Con más datos y optimizaciones, los modelos pueden volverse aún más precisos y útiles en entornos clínicos.
 
 
 

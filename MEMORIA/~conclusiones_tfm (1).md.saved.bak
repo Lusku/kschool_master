@@ -134,9 +134,6 @@ En la aplicación final, se observó que la probabilidad de predicción variaba 
  Nos hemos encontrado con el overfitting también, que aunque hemos conseguido disminuirlo gracias al método de VotingClassiffier, uniendo 3 modelos en uno *"Gradient Boosting + LightGBM + XGBoost"*, seguimos topándonos con esta problemática que ya teníamos presente que ibamos a tenerlo por cantidad del dataset que usamos.
 
  Por ello, hemos buscado técnicas que podríamos usar en un futuro problema y situación similar, es decir, para reducir el sobreajuste en un conjunto de datos pequeño. Hemos considerado utilizar técnicas de regularización como L1 (Lasso) o L2 (Ridge), implementar validación cruzada para una evaluación más robusta, seleccionar cuidadosamente las características más relevantes, ajustar parámetros de modelos con regularización incorporada y monitorear de cerca las métricas de rendimiento en ambos conjuntos de datos (entrenamiento y prueba). Estas estrategias pueden ayudar a mejorar la generalización del modelo y mitigar los efectos del sobreajuste.
- 
- Otro punto que queda pendiente de realizar es aplicar el método de CTGANS al resto de los Dataframes que hemos usado para aplicar la teoria de la probabilidad total
- 
 ### Conclusión final Caminos Abiertos
 
 Para avanzar en el desarrollo de modelos de predicción de cáncer más robustos y fiables, es crucial acceder a más datos reales o generar datos sintéticos de manera cuidadosa. También es esencial mejorar el procesamiento de datos, replicar y comparar modelos de referencia, y mitigar la tendencia al sobreajuste. Además, explorar y refinar modelos adicionales, incluidos los no supervisados, puede proporcionar insights valiosos y mejorar el rendimiento general de los modelos.
